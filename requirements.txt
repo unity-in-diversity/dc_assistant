@@ -1,4 +1,4 @@
-django
-
-
-
+Django
+Pillow
+django-mptt
+django-taggit
