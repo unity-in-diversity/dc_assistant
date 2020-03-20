@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% block title %}
+  <h2 class="card-title">Regions</h2>
+{% endblock %}
+        <!-- ============================================================== -->
+        <!-- Buttons-->
+        <!-- ============================================================== -->
+         <div class="container-fluid">
+            <div class="row justify-content-end">
+                <div class="col-md-auto col-sm-auto">
+                    <a class="btn btn-primary btn-lg" href="{% url 'organisation:region_add' %}" role="button">Add</a>
+                    <a class="btn btn-secondary btn-lg" href="#" role="button">Import</a>
+                </div>
+            </div>
+         </div>
+         <hr>
+        <!-- ============================================================== -->
+        <!-- End Buttons-->
+        <!-- ============================================================== -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+<!--                            <div class="card-body">-->
+<!--                                <h5 class="card-title m-b-0">Static Table With Checkboxes</h5>-->
+<!--                            </div>-->
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>
+                                            <label class="customcheckbox m-b-20">
+                                                <input type="checkbox" id="mainCheckbox" />
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </th>
+                                        <th scope="col">Parent</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Location count</th>
+                                    </tr>
+                                </thead>
+                                {% for region in regions %}
+                                <tbody class="customtable">
+                                    <tr>
+                                        <th>
+                                            <label class="customcheckbox">
+                                                <input type="checkbox" class="listCheckbox" />
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </th>
+                                        <td>{{region.parent}}</td>
+                                        <td>{{region.name}}</td>
+                                        <td>Тут будет кол-во локаций в регионе</td>
+                                    </tr>
+
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
+                </div>
+
+            </div>
+        </div>
+{% endblock %}
+
+
+
