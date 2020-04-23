@@ -36,7 +36,7 @@ class Region(MPTTModel):
         return self.name
 
     def get_absolute_url(self):
-        return "{}?region={}".format(reverse('organisation:location_list'), self.slug)
+        return "{}?region={}".format(reverse('organisation:region_list'), self.slug)
 
     # def save(self, *args, **kwargs):
     #     self.slug = slugify(self.name)
