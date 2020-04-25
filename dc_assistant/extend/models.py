@@ -90,3 +90,18 @@ class ImgAttach(models.Model):
         filename = self.image.name.rsplit('/', 1)[-1]
         return filename.split('_', 2)[2]
 
+
+class LoggingModel(models.Model):
+    created = models.DateField(
+        auto_now_add=True,
+        blank=True,
+        null=True
+    )
+    last_updated = models.DateTimeField(
+        auto_now=True,
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        abstract = True

@@ -5,7 +5,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
-from extend.models import TaggedItem, ImgAttach
+from extend.models import TaggedItem, ImgAttach, LoggingModel
 
 
 #TODO: в url.py каждого приложения определить пространство уролов используемое в функциях get_absolute_url моделей
@@ -42,7 +42,7 @@ class Region(MPTTModel):
     #     self.slug = slugify(self.name)
     #     super(Region, self).save(*args, **kwargs)
 
-class Location(models.Model):
+class Location(LoggingModel):
     """
     Место расположения инфраструктуры (здание, офис, цод и т.п.)
     """
@@ -80,7 +80,7 @@ class Location(models.Model):
     def get_absolute_url(self):
         return reverse('organisation:location', args=[self.slug])
 
-class Rack(models.Model):
+class Rack(LoggingModel):
     """
     Конфигурация стойки
     """
@@ -140,7 +140,7 @@ class Rack(models.Model):
         return ""
 
 
-class Vendor(models.Model):
+class Vendor(LoggingModel):
     """
     Представляет список производителей.
     """
@@ -157,7 +157,7 @@ class Vendor(models.Model):
     def get_absolute_url(self):
         return "{}?vendor={}".format(reverse('organisation:vendormodel_list'), self.slug)
 
-class VendorModel(models.Model):
+class VendorModel(LoggingModel):
     """
     Представялет конкретные модели оборудования вендоров
     """
@@ -199,7 +199,7 @@ class VendorModel(models.Model):
         return '{} {}'.format(self.vendor.name, self.model)
 
 
-class Platform(models.Model):
+class Platform(LoggingModel):
 
     name = models.CharField(
         max_length=100,
@@ -223,7 +223,7 @@ class Platform(models.Model):
         return "{}?platform={}".format(reverse('organisation:device_list'), self.slug)
 
 
-class DeviceRole(models.Model):
+class DeviceRole(LoggingModel):
 
     name = models.CharField(
         max_length=50,
@@ -246,7 +246,7 @@ class DeviceRole(models.Model):
         return self.name
 
 
-class Device(models.Model):
+class Device(LoggingModel):
     """
     Представление единиц оборудованиея со свойствами и связями
     """
