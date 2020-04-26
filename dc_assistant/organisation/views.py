@@ -3,7 +3,10 @@ from .forms import RegionAddForm, SiteAddForm
 from .models import Region, Location
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import View, CreateView
+from django.views.generic import View, CreateView, ListView
+from . import tables
+
+from django_tables2 import SingleTableView
 # Create your views here.
 
 def region_view(request):
@@ -13,6 +16,16 @@ def region_view(request):
 def location_view(request):
     locations = Location.objects.all()
     return render(request, 'organisation/locations.html', context={'locations': locations})
+
+class LocationListView(SingleTableView):
+    #permission_required = 'dcim.view_site'
+    #queryset = Location.objects.all()
+    #filterset = filters.SiteFilterSet
+    #filterset_form = forms.SiteFilterForm
+    model = Location
+    table = tables.LocationTable
+    success_url = reverse_lazy('organisation:location_list')
+    template_name = 'organisation/locations_tab.html'
 
 class RegionAdd(CreateView):
     form_class = RegionAddForm
