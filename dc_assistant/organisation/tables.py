@@ -12,11 +12,11 @@ SITE_REGION_LINK = """
 
 class LocationTable(tables.Table):
     #pk = ToggleColumn()
-    name = tables.LinkColumn(order_by=('name',))
     region = tables.TemplateColumn(template_code=SITE_REGION_LINK)
 
     class Meta:
         model = Location
         fields = ('name', 'region', 'description')
         #fields = ('pk', 'name', 'region', 'description')
-        attrs = {'class': 'table table-hover table-headings'}
+        attrs = {'class': 'table'}
+        template_name = "django_tables2/bootstrap.html"

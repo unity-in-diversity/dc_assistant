@@ -7,6 +7,7 @@ from django.views.generic import View, CreateView, ListView
 from . import tables
 
 from django_tables2 import SingleTableView
+from .tables import LocationTable
 # Create your views here.
 
 def region_view(request):
@@ -19,11 +20,11 @@ def location_view(request):
 
 class LocationListView(SingleTableView):
     #permission_required = 'dcim.view_site'
-    #queryset = Location.objects.all()
+    queryset = Location.objects.all()
     #filterset = filters.SiteFilterSet
     #filterset_form = forms.SiteFilterForm
-    model = Location
-    table = tables.LocationTable
+    #model = Location
+    table_class = LocationTable
     success_url = reverse_lazy('organisation:location_list')
     template_name = 'organisation/locations_tab.html'
 
