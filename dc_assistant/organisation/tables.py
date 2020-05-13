@@ -7,11 +7,12 @@ SITE_REGION_LINK = """
     <a href="{% url 'organisation:location_list' %}?region={{ record.region.slug }}">{{ record.region }}</a>
 {% else %}
     &mdash;
-{% endif %}
+{% endif %} 
 """
 
 class LocationTable(tables.Table):
     #pk = ToggleColumn()
+    name = tables.LinkColumn(order_by=('name',))
     region = tables.TemplateColumn(template_code=SITE_REGION_LINK)
 
     class Meta:
@@ -19,4 +20,4 @@ class LocationTable(tables.Table):
         fields = ('name', 'region', 'description')
         #fields = ('pk', 'name', 'region', 'description')
         attrs = {'class': 'table'}
-        template_name = "django_tables2/bootstrap.html"
+        #template_name = "django_tables2/bootstrap4.html"

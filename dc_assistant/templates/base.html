@@ -16,14 +16,11 @@
     <!-- Custom CSS -->
     <link href="{% static 'assets/libs/flot/css/float-chart.css' %}" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet">
-
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/jquery-minicolors/jquery.minicolors.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
-
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/quill/dist/quill.snow.css' %}">
     <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet">
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>-->
@@ -167,6 +164,7 @@
                             <ul aria-expanded="false" class="collapse  first-level">
                                 <li class="sidebar-item"><a href="{% url 'organisation:region_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-crosshairs-gps"></i><span class="hide-menu"> Regions </span></a></li>
                                 <li class="sidebar-item"><a href="{% url 'organisation:location_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-cube"></i><span class="hide-menu"> Locations </span></a></li>
+                                <li class="sidebar-item"><a href="{% url 'organisation:rack_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-blur-linear"></i><span class="hide-menu"> Racks </span></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -211,7 +209,6 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    {% block scripts %}{% endblock %}
     <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
     <!-- Bootstrap tether Core JavaScript -->
     <script src="{% static 'assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
@@ -239,6 +236,17 @@
     <script src="{% static 'assets/extra-libs/multicheck/jquery.multicheck.js' %}"></script>
     <script src="{% static 'assets/extra-libs/DataTables/datatables.min.js' %}"></script>
 
+    <script src="{% static 'assets/libs/inputmask/dist/min/jquery.inputmask.bundle.min.js' %}"></script>
+    <script src="{% static 'dist/js/pages/mask/mask.init.js' %}"></script>
+    <script src="{% static 'assets/libs/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/libs/select2/dist/js/select2.min.js' %}"></script>
+    <script src="{% static 'assets/libs/jquery-asColor/dist/jquery-asColor.min.js' %}"></script>
+    <script src="{% static 'assets/libs/jquery-asGradient/dist/jquery-asGradient.js' %}"></script>
+    <script src="{% static 'assets/libs/jquery-asColorPicker/dist/jquery-asColorPicker.min.js' %}"></script>
+    <script src="{% static 'assets/libs/jquery-minicolors/jquery.minicolors.min.js' %}"></script>
+    <script src="{% static 'assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'assets/libs/quill/dist/quill.min.js' %}"></script>
+
     <script>
         /****************************************
          *       Basic Table                   *
@@ -246,6 +254,49 @@
         $('#zero_config').DataTable();
     </script>
 
+    <script>
+        //***********************************//
+        // For select 2
+        //***********************************//
+        $(".select2").select2();
+
+        /*colorpicker*/
+        $('.demo').each(function() {
+        //
+        // Dear reader, it's actually very easy to initialize MiniColors. For example:
+        //
+        //  $(selector).minicolors();
+        //
+        // The way I've done it below is just for the demo, so don't get confused
+        // by it. Also, data- attributes aren't supported at this time...they're
+        // only used for this demo.
+        //
+        $(this).minicolors({
+                control: $(this).attr('data-control') || 'hue',
+                position: $(this).attr('data-position') || 'bottom left',
+
+                change: function(value, opacity) {
+                    if (!value) return;
+                    if (opacity) value += ', ' + opacity;
+                    if (typeof console === 'object') {
+                        console.log(value);
+                    }
+                },
+                theme: 'bootstrap'
+            });
+
+        });
+        /*datwpicker*/
+        jQuery('.mydatepicker').datepicker();
+        jQuery('#datepicker-autoclose').datepicker({
+            autoclose: true,
+            todayHighlight: true
+        });
+        var quill = new Quill('#editor', {
+            theme: 'snow'
+        });
+
+    </script>
 
 </body>
 

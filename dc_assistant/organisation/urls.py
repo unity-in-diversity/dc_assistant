@@ -9,5 +9,9 @@ urlpatterns = [
     path('regions/add', views.RegionAdd.as_view(), name='region_add'),
     #path('locations/', views.location_view, name='location_list'),
     path('locations/', views.LocationListView.as_view(), name='location_list'),
-    path('locations/add', views.LocationAdd.as_view(), name='location_add')
+    path('locations/add', views.LocationAdd.as_view(), name='location_add'),
+    path('locations/<slug:slug>/', views.LocationView.as_view(), name='location'),
+    path('racks/', views.RackListView.as_view(), name='rack_list'),
+    path('racks/add', views.RackAdd.as_view(), name='rack_add'),
+    path('racks/<int:pk>/', views.RackView.as_view(), name='rack'),
 ]

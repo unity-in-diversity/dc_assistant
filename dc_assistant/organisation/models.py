@@ -106,12 +106,12 @@ class Rack(LoggingModel):
 
     u_height = models.PositiveSmallIntegerField(
         default=44,
-        verbose_name='Высота в юнитах',
+        verbose_name='Unit Height',
         validators=[MinValueValidator(1), MaxValueValidator(100)])
 
     desc_units = models.BooleanField(
         default=False,
-        verbose_name='Сверху вниз',
+        verbose_name='Top to buttom',
         help_text='По умолчанию нумерация юнитов снизу вверх')
 
     racktype = models.CharField(
