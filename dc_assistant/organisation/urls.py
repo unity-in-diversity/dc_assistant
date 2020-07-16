@@ -5,7 +5,7 @@ from dc_assistant import views as homeviews
 app_name = 'organisation'
 
 urlpatterns = [
-    path('regions/', views.region_view, name='region_list'),
+    path('regions/', views.region_list_view, name='region_list'),
     path('regions/add', views.RegionAdd.as_view(), name='region_add'),
     #path('locations/', views.location_view, name='location_list'),
     path('locations/', views.LocationListView.as_view(), name='location_list'),
@@ -14,4 +14,7 @@ urlpatterns = [
     path('racks/', views.RackListView.as_view(), name='rack_list'),
     path('racks/add', views.RackAdd.as_view(), name='rack_add'),
     path('racks/<int:pk>/', views.RackView.as_view(), name='rack'),
+    path('devices/', views.DeviceListView.as_view(), name='device_list'),
+    path('devices/<int:pk>/', views.DeviceView.as_view(), name='device'),
+
 ]

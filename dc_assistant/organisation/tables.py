@@ -1,6 +1,7 @@
 import django_tables2 as tables
 #from extend.tables import BaseTable
-from .models import Location
+from django_tables2.utils import Accessor
+from .models import Location, Rack
 
 SITE_REGION_LINK = """
 {% if record.region %}
@@ -8,6 +9,10 @@ SITE_REGION_LINK = """
 {% else %}
     &mdash;
 {% endif %} 
+"""
+
+RACK_DEVICE_COUNT = """
+<a href="{% url 'organisation:device_list' %}?rack_id={{ record.pk }}">{{ value }}</a>
 """
 
 class LocationTable(tables.Table):
@@ -21,3 +26,16 @@ class LocationTable(tables.Table):
         #fields = ('pk', 'name', 'region', 'description')
         attrs = {'class': 'table'}
         #template_name = "django_tables2/bootstrap4.html"
+
+class RackTable(tables.Table):
+    #pk = ToggleColumn()
+    name = tables.LinkColumn(order_by=('name',))
+    location = tables.LinkColumn('organisation:location', args=[Accessor('location.slug')])
+    u_height = tables.TemplateColumn("{{ record.u_height }}U", verbose_name='Height')
+    device_count = tables.TemplateColumn(
+        template_code=RACK_DEVICE_COUNT,
+        verbose_name='Devices'
+    )
+    class Meta:
+        model = Rack
+        fields = ('name', 'location', 'u_height', 'device_count')
