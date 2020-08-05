@@ -36,7 +36,7 @@ class Region(MPTTModel):
         return self.name
 
     def get_absolute_url(self):
-        return "{}?region={}".format(reverse('organisation:region_list'), self.slug)
+        return "{}?region={}".format(reverse('organisation:location_list'), self.slug)
 
     # def save(self, *args, **kwargs):
     #     self.slug = slugify(self.name)
@@ -205,10 +205,6 @@ class Platform(LoggingModel):
         max_length=100,
         unique=True)
 
-    version = models.CharField(
-        max_length=50,
-        unique=True)
-
     slug = models.SlugField(
         unique=True,
         max_length=100)
@@ -322,9 +318,9 @@ class Device(LoggingModel):
 #        null=True)
 
 #    primary_ip = models.OneToOneField(
-#        to='infrastructure.IPAddress',
+#        to='IPAddress',
 #        on_delete=models.SET_NULL,
-#        related_name='primary_ip_for',
+#        related_name='primary_ip',
 #        blank=True,
 #        null=True,
 #        verbose_name='Основной IP адрес')

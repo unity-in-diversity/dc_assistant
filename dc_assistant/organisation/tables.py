@@ -16,19 +16,16 @@ RACK_DEVICE_COUNT = """
 """
 
 class LocationTable(tables.Table):
-    #pk = ToggleColumn()
     name = tables.LinkColumn(order_by=('name',))
     region = tables.TemplateColumn(template_code=SITE_REGION_LINK)
 
     class Meta:
         model = Location
         fields = ('name', 'region', 'description')
-        #fields = ('pk', 'name', 'region', 'description')
         attrs = {'class': 'table'}
         #template_name = "django_tables2/bootstrap4.html"
 
 class RackTable(tables.Table):
-    #pk = ToggleColumn()
     name = tables.LinkColumn(order_by=('name',))
     location = tables.LinkColumn('organisation:location', args=[Accessor('location.slug')])
     u_height = tables.TemplateColumn("{{ record.u_height }}U", verbose_name='Height')
@@ -39,3 +36,4 @@ class RackTable(tables.Table):
     class Meta:
         model = Rack
         fields = ('name', 'location', 'u_height', 'device_count')
+        attrs = {'class': 'table'}

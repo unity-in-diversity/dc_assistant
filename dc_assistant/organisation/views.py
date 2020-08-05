@@ -1,15 +1,17 @@
 from django.shortcuts import render
 from django.db.models import Count
-from .forms import RegionAddForm, LocationAddForm, RackAddForm
-from .models import Region, Location, Rack
-from django.http import HttpResponseRedirect
+#from django.http import HttpResponseRedirect
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView, ListView
-from . import tables
-
-from django_tables2 import SingleTableView
+from .forms import RegionAddForm, LocationAddForm, RackAddForm
+from .models import Region, Location, Rack
+from extend.views import ListObjectsView
+from extend import filters
 from .tables import LocationTable, RackTable
-# Create your views here.
+#from django_tables2 import RequestConfig
+from django_tables2 import SingleTableView
+
 
 def region_list_view(request):
     regions = Region.objects.all()
@@ -21,19 +23,17 @@ class RegionAdd(CreateView):
     success_url = reverse_lazy('organisation:region_list')
     template_name = 'organisation/region_add.html'
 
-# def location_view(request):
-#     locations = Location.objects.all()
-#     return render(request, 'organisation/x_locations.html', context={'locations': locations})
 
-class LocationListView(SingleTableView):
+class LocationListView(ListObjectsView):
     #permission_required = 'dcim.view_site'
-    queryset = Location.objects.all()
-    #filterset = filters.SiteFilterSet
-    #filterset_form = forms.SiteFilterForm
+    #queryset = Location.objects.all()
+    queryset = Location.objects.prefetch_related('region')
+    filterset = filters.LocationFilterSet
     #model = Location
-    table_class = LocationTable
+    table = LocationTable
     success_url = reverse_lazy('organisation:location_list')
     template_name = 'organisation/locations_tab.html'
+
 
 class LocationAdd(CreateView):
     form_class = LocationAddForm
@@ -44,12 +44,14 @@ class LocationAdd(CreateView):
 class LocationView(View):
     pass
 
-class RackListView(SingleTableView):
+
+class RackListView(ListObjectsView):
     #queryset = Rack.objects.all()
     queryset = Rack.objects.prefetch_related('location').annotate(device_count=Count('devices'))
-    table_class = RackTable
+    #table_class = RackTable
+    table = RackTable
     success_url = reverse_lazy('organisation:rack_list')
-    template_name = 'organisation/rack_tab.html'
+    template_name = 'organisation/racks_tab.html'
 
 class RackAdd(CreateView):
     form_class = RackAddForm

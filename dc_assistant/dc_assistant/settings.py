@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'mptt',
     'taggit',
     'django_tables2',
+    'django_filters',
     'extend',
     'organisation',
 ]
