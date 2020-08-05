@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from taggit.models import TagBase, GenericTaggedItemBase
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+import django_tables2 as tables
 
 __all__ = (
     'Tag',
@@ -90,3 +91,18 @@ class ImgAttach(models.Model):
         filename = self.image.name.rsplit('/', 1)[-1]
         return filename.split('_', 2)[2]
 
+
+class LoggingModel(models.Model):
+    created = models.DateField(
+        auto_now_add=True,
+        blank=True,
+        null=True
+    )
+    last_updated = models.DateTimeField(
+        auto_now=True,
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        abstract = True
