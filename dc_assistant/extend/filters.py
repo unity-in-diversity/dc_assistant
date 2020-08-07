@@ -1,7 +1,7 @@
 import django_filters
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from organisation.models import (Region, Location)
+from organisation.models import (Region, Location, Vendor, VendorModel)
 
 class TreeNodeMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
     """
@@ -56,3 +56,21 @@ class LocationFilterSet(django_filters.FilterSet):
     #     except ValueError:
     #         pass
     #     return queryset.filter(qs_filter)
+
+class DeviceModelFilterSet(django_filters.FilterSet):
+    vendor_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Vendor.objects.all(),
+        label='Vendor (ID)',
+    )
+    vendor = django_filters.ModelMultipleChoiceFilter(
+        field_name='vendor__slug',
+        queryset=Vendor.objects.all(),
+        to_field_name='slug',
+        label='Vendor (slug)',
+    )
+
+    class Meta:
+        model = VendorModel
+        fields = [
+            'model', 'slug',
+        ]

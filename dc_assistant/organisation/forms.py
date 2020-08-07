@@ -1,13 +1,31 @@
 from django import forms
 from mptt.forms import TreeNodeChoiceField
 from taggit.forms import TagField
-from .models import Region, Location, Rack
+from django.forms import ModelForm, Textarea, TextInput, NumberInput
+from .models import Region, Location, Rack, VendorModel, Vendor
 
 class StaticSelectWidget(forms.Select):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.attrs['class'] = 'select2 form-control custom-select'
+
+class SlugWidget(forms.TextInput):
+    """
+    Subclass TextInput and add a slug regeneration button next to the form field.
+    """
+    template_name = 'sluginput.html'
+
+class SlugField(forms.SlugField):
+    """
+    Extend the built-in SlugField to automatically populate from a field called `name` unless otherwise specified.
+    """
+    def __init__(self, slug_source='name', *args, **kwargs):
+        label = kwargs.pop('label', "Slug")
+        #help_text = kwargs.pop('help_text', "URL-friendly")
+        widget = kwargs.pop('widget', SlugWidget)
+        super().__init__(label=label, widget=widget, *args, **kwargs)
+        self.widget.attrs['slug-source'] = slug_source
 
 class RegionAddForm(forms.ModelForm):
     parent = TreeNodeChoiceField(label='Родитель', required=False, queryset=Region.objects.all(), level_indicator = u'-', widget=forms.Select(attrs={'class': 'form-control'}))
@@ -41,9 +59,9 @@ class LocationAddForm(forms.ModelForm):
             'name', 'slug', 'region', 'physical_address', 'description', 'comment'
         ]
         widgets = {
-            'physical_address': forms.Textarea(attrs={'rows': 3, }),
-            'description': forms.Textarea(attrs={'rows': 3, }),
-            'comment': forms.Textarea(attrs={'rows': 5, })
+            'physical_address': Textarea(attrs={'rows': 3, }),
+            'description': Textarea(attrs={'rows': 3, }),
+            'comment': Textarea(attrs={'rows': 5, })
         }
 
 
@@ -56,9 +74,20 @@ class RackAddForm(forms.ModelForm):
 
     class Meta:
         model = Rack
-        fields = ['name', 'location', 'u_height', 'desc_units', 'racktype', 'comment',
-        ]
+        fields = ['name', 'location', 'u_height', 'desc_units', 'racktype', 'comment']
         widgets = {
             'racktype': StaticSelectWidget()
         }
 
+class VendorModelAddForm(forms.ModelForm):
+    vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), empty_label="------",
+                                    widget=forms.Select(attrs={'class': 'select2 form-control'}))
+    slug = SlugField(slug_source='model')
+    class Meta:
+        model = VendorModel
+        fields = ['model', 'vendor', 'slug', 'u_height', 'front_image', 'rear_image', 'comment']
+        widgets = {
+            'model': TextInput(attrs={'class': 'form-control'}),
+            'u_height': NumberInput(attrs={'class': 'form-control'}),
+            'comment': Textarea(attrs={'class': 'form-control', 'rows': 5,}),
+        }

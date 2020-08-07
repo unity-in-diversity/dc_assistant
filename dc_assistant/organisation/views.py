@@ -4,11 +4,11 @@ from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView, ListView
-from .forms import RegionAddForm, LocationAddForm, RackAddForm
-from .models import Region, Location, Rack
+from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm
+from .models import Region, Location, Rack, VendorModel, Device
 from extend.views import ListObjectsView
 from extend import filters
-from .tables import LocationTable, RackTable
+from .tables import LocationTable, RackTable, VendorModelTable
 #from django_tables2 import RequestConfig
 from django_tables2 import SingleTableView
 
@@ -62,8 +62,40 @@ class RackAdd(CreateView):
 class RackView(View):
     pass
 
-class DeviceListView(View):
+class VendorModelListView(ListObjectsView):
+    queryset = VendorModel.objects.prefetch_related('vendor').annotate(instance_count=Count('instances'))
+    filterset = filters.DeviceModelFilterSet
+    # table_class = RackTable
+    table = VendorModelTable
+    success_url = reverse_lazy('organisation:model_list')
+    template_name = 'organisation/models_tab.html'
+
+class VendorModelAdd(CreateView):
+    form_class = VendorModelAddForm
+    model = VendorModel
+    success_url = reverse_lazy('organisation:model_list')
+    template_name = 'organisation/model_add.html'
+
+class VendorModelView(View):
     pass
+
+class RoleModelListView(ListObjectsView):
+    pass
+
+class RoleModelAdd(CreateView):
+    pass
+
+class DeviceAdd(CreateView):
+    pass
+
+class DeviceListView(ListObjectsView):
+    queryset = Device.objects.prefetch_related(
+        'device_model__vendor', 'device_role', 'locaion', 'rack',
+    )
+    #filterset = filters.DeviceFilterSet
+    #filterset_form = forms.DeviceFilterForm
+    #table = tables.DeviceDetailTable
+    #template_name = 'dcim/device_list.html'
 
 class DeviceView(View):
     pass

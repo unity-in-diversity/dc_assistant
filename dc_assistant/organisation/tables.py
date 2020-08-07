@@ -1,7 +1,7 @@
 import django_tables2 as tables
 #from extend.tables import BaseTable
 from django_tables2.utils import Accessor
-from .models import Location, Rack
+from .models import Location, Rack, VendorModel
 
 SITE_REGION_LINK = """
 {% if record.region %}
@@ -13,6 +13,10 @@ SITE_REGION_LINK = """
 
 RACK_DEVICE_COUNT = """
 <a href="{% url 'organisation:device_list' %}?rack_id={{ record.pk }}">{{ value }}</a>
+"""
+
+DEVICEMODEL_INSTANCES_TEMPLATE = """
+<a href="{% url 'organisation:device_list' %}?vendor_id={{ record.vendor_id }}&device_model_id={{ record.pk }}">{{ record.instance_count }}</a>
 """
 
 class LocationTable(tables.Table):
@@ -37,3 +41,14 @@ class RackTable(tables.Table):
         model = Rack
         fields = ('name', 'location', 'u_height', 'device_count')
         attrs = {'class': 'table'}
+
+class VendorModelTable(tables.Table):
+    #pk = ToggleColumn()
+    model = tables.LinkColumn('organisation:model', args=[Accessor('pk')], verbose_name='Device Model')
+    instance_count = tables.TemplateColumn(
+        template_code=DEVICEMODEL_INSTANCES_TEMPLATE,
+        verbose_name='Instances')
+    class Meta:
+        model = VendorModel
+        fields = ('model', 'vendor', 'u_height', 'depth', 'instance_count',)
+        attrs = {'class': 'table table-hover table-headings',}

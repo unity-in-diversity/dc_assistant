@@ -155,7 +155,7 @@ class Vendor(LoggingModel):
         return self.name
 
     def get_absolute_url(self):
-        return "{}?vendor={}".format(reverse('organisation:vendormodel_list'), self.slug)
+        return "{}?vendor={}".format(reverse('organisation:model_list'), self.slug)
 
 class VendorModel(LoggingModel):
     """
@@ -173,12 +173,12 @@ class VendorModel(LoggingModel):
 
     u_height = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name='Высота в юнитах')
+        verbose_name='Height (U)')
 
     depth = models.BooleanField(
         default=True,
-        verbose_name='Во всю глубину стойки',
-        help_text='По умолчанию во всю глубину стойки')
+        verbose_name='Full Depth',
+        help_text='Default is Full Depth')
 
     front_image = models.ImageField(
         upload_to='imgs-devicemodel',
@@ -253,8 +253,8 @@ class Device(LoggingModel):
     REAR = 0
 
     RACK_SIDE_CHOICES = (
-        (FRONT, 'Размещено на лицевой стороне стойке'),
-        (REAR, 'Размещено на обратной стороне стойке'),
+        (FRONT, 'Размещено на лицевой стороне стойки'),
+        (REAR, 'Размещено на обратной стороне стойки'),
     )
 
     #TODO: добавить выбор типа оборудования и поля с выбором
@@ -263,7 +263,7 @@ class Device(LoggingModel):
         max_length=50,
         unique=True)
 
-    device_type = models.ForeignKey(
+    device_model = models.ForeignKey(
         to=VendorModel,
         on_delete=models.PROTECT,
         related_name='instances')
@@ -311,7 +311,7 @@ class Device(LoggingModel):
         null=True)
 
 #    cluster = models.ForeignKey(
-#        to='infrastructure.Cluster',
+#        to='Cluster',
 #        on_delete=models.SET_NULL,
 #        related_name='devices',
 #        blank=True,

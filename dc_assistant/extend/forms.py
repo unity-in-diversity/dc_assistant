@@ -55,3 +55,21 @@ from django import forms
 
 #сlass RackAddForm(forms.Form):
 #    racktype = forms.MultipleChoiceField(choices=RACK_TYPE_CHOICES, required=True)
+
+
+# class SlugWidget(forms.TextInput):
+#     """
+#     Subclass TextInput and add a slug regeneration button next to the form field.
+#     """
+#     template_name = 'organisation/sluginput.html'
+#
+# class SlugField(forms.SlugField):
+#     """
+#     Extend the built-in SlugField to automatically populate from a field called `name` unless otherwise specified.
+#     """
+#     def __init__(self, slug_source='name', *args, **kwargs):
+#         label = kwargs.pop('label', "Slug")
+#         help_text = kwargs.pop('help_text', "URL-friendly unique shorthand")
+#         widget = kwargs.pop('widget', SlugWidget)
+#         super().__init__(label=label, help_text=help_text, widget=widget, *args, **kwargs)
+#         self.widget.attrs['slug-source'] = slug_source

@@ -20,6 +20,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/jquery-minicolors/jquery.minicolors.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/quill/dist/quill.snow.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/select2-bootstrap-0.1.0-beta.10/select2-bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/font-awesome-4.7.0/css/font-awesome.min.css' %}">
     <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -165,6 +167,15 @@
                                 <li class="sidebar-item"><a href="{% url 'organisation:region_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-crosshairs-gps"></i><span class="hide-menu"> Regions </span></a></li>
                                 <li class="sidebar-item"><a href="{% url 'organisation:location_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-cube"></i><span class="hide-menu"> Locations </span></a></li>
                                 <li class="sidebar-item"><a href="{% url 'organisation:rack_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-blur-linear"></i><span class="hide-menu"> Racks </span></a></li>
+                                <li class="sidebar-item"><a href="{% url 'organisation:model_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-chip"></i><span class="hide-menu"> Device Models </span></a></li>
+                                <li class="sidebar-item"><a href="{% url 'organisation:role_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-cards"></i><span class="hide-menu"> Device Roles </span></a></li>
+                                <li class="sidebar-item"><a href="{% url 'organisation:location_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-server"></i><span class="hide-menu"> Devices </span></a></li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-lock"></i><span class="hide-menu">Secret </span></a>
+                            <ul aria-expanded="True" class="collapse  first-level">
+                                <li class="sidebar-item"><a href="{% url 'organisation:rack_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-key-variant"></i><span class="hide-menu"> Passwords </span></a></li>
+                                <li class="sidebar-item"><a href="{% url 'organisation:rack_list' %}" class="sidebar-link waves-effect waves-dark sidebar-link"><i class="mdi mdi-lock-pattern"></i><span class="hide-menu"> Passwords Role </span></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -238,6 +249,7 @@
 
     <script src="{% static 'assets/libs/inputmask/dist/min/jquery.inputmask.bundle.min.js' %}"></script>
     <script src="{% static 'dist/js/pages/mask/mask.init.js' %}"></script>
+    <script src="{% static 'dist/js/forms.js' %}"></script>
     <script src="{% static 'assets/libs/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/libs/select2/dist/js/select2.min.js' %}"></script>
     <script src="{% static 'assets/libs/jquery-asColor/dist/jquery-asColor.min.js' %}"></script>
