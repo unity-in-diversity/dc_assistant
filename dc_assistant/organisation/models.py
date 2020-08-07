@@ -38,10 +38,6 @@ class Region(MPTTModel):
     def get_absolute_url(self):
         return "{}?region={}".format(reverse('organisation:location_list'), self.slug)
 
-    # def save(self, *args, **kwargs):
-    #     self.slug = slugify(self.name)
-    #     super(Region, self).save(*args, **kwargs)
-
 class Location(LoggingModel):
     """
     Место расположения инфраструктуры (здание, офис, цод и т.п.)
