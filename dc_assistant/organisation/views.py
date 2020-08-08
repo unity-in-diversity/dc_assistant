@@ -5,13 +5,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView, ListView
 from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm
-from .models import Region, Location, Rack, VendorModel, Device
+from .models import Region, Location, Rack, VendorModel, Device, DeviceRole
 from extend.views import ListObjectsView
 from extend import filters
-from .tables import LocationTable, RackTable, VendorModelTable
+from .tables import LocationTable, RackTable, VendorModelTable, DeviceRoleTable
 #from django_tables2 import RequestConfig
 from django_tables2 import SingleTableView
-
+from django_tables2 import LazyPaginator
 
 def region_list_view(request):
     regions = Region.objects.all()
@@ -29,7 +29,6 @@ class LocationListView(ListObjectsView):
     #queryset = Location.objects.all()
     queryset = Location.objects.prefetch_related('region')
     filterset = filters.LocationFilterSet
-    #model = Location
     table = LocationTable
     success_url = reverse_lazy('organisation:location_list')
     template_name = 'organisation/locations_tab.html'
@@ -79,11 +78,19 @@ class VendorModelAdd(CreateView):
 class VendorModelView(View):
     pass
 
-class RoleModelListView(ListObjectsView):
+class RoleDeviceListView(ListObjectsView):
+    queryset = DeviceRole.objects.all()
+    table = DeviceRoleTable
+    success_url = reverse_lazy('organisation:role_list')
+    template_name = 'organisation/roles_tab.html'
+
+class RoleDeviceAdd(CreateView):
     pass
 
-class RoleModelAdd(CreateView):
-    pass
+
+
+
+
 
 class DeviceAdd(CreateView):
     pass

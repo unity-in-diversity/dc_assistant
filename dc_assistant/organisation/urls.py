@@ -16,8 +16,8 @@ urlpatterns = [
     path('models/', views.VendorModelListView.as_view(), name='model_list'),
     path('models/add', views.VendorModelAdd.as_view(), name='model_add'),
     path('models/<int:pk>/', views.VendorModelView.as_view(), name='model'),
-    path('roles/', views.RoleModelListView.as_view(), name='role_list'),
-    path('roles/add', views.RoleModelAdd.as_view(), name='role_add'),
+    path('roles/', views.RoleDeviceListView.as_view(), name='role_list'),
+    path('roles/add', views.RoleDeviceAdd.as_view(), name='role_add'),
 
     path('devices/', views.DeviceListView.as_view(), name='device_list'),
     path('devices/<int:pk>/', views.DeviceView.as_view(), name='device'),

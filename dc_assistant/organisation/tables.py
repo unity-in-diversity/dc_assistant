@@ -1,7 +1,7 @@
 import django_tables2 as tables
 #from extend.tables import BaseTable
 from django_tables2.utils import Accessor
-from .models import Location, Rack, VendorModel
+from .models import Location, Rack, VendorModel, DeviceRole
 
 SITE_REGION_LINK = """
 {% if record.region %}
@@ -19,6 +19,15 @@ DEVICEMODEL_INSTANCES_TEMPLATE = """
 <a href="{% url 'organisation:device_list' %}?vendor_id={{ record.vendor_id }}&device_model_id={{ record.pk }}">{{ record.instance_count }}</a>
 """
 
+DEVICEROLE_DEVICE_COUNT = """
+<a href="{% url 'organisation:device_list' %}?role={{ record.slug }}">{{ value }}</a>
+"""
+
+COLOR_LABEL = """
+{% load utils %}
+<label class="label" style="color: {{ record.color|fgcolor }}; background-color: #{{ record.color }}">{{ record }}</label>
+"""
+
 class LocationTable(tables.Table):
     name = tables.LinkColumn(order_by=('name',))
     region = tables.TemplateColumn(template_code=SITE_REGION_LINK)
@@ -27,7 +36,7 @@ class LocationTable(tables.Table):
         model = Location
         fields = ('name', 'region', 'description')
         attrs = {'class': 'table'}
-        #template_name = "django_tables2/bootstrap4.html"
+        #template_name = 'django_tables2/bootstrap-responsive.html'
 
 class RackTable(tables.Table):
     name = tables.LinkColumn(order_by=('name',))
@@ -40,11 +49,11 @@ class RackTable(tables.Table):
     class Meta:
         model = Rack
         fields = ('name', 'location', 'u_height', 'device_count')
-        attrs = {'class': 'table'}
+        attrs = {'class': 'table table-hover table-headings',}
 
 class VendorModelTable(tables.Table):
     #pk = ToggleColumn()
-    model = tables.LinkColumn('organisation:model', args=[Accessor('pk')], verbose_name='Device Model')
+    #model = tables.LinkColumn('organisation:model', args=[Accessor('pk')], verbose_name='Device Model')
     instance_count = tables.TemplateColumn(
         template_code=DEVICEMODEL_INSTANCES_TEMPLATE,
         verbose_name='Instances')
@@ -52,3 +61,24 @@ class VendorModelTable(tables.Table):
         model = VendorModel
         fields = ('model', 'vendor', 'u_height', 'depth', 'instance_count',)
         attrs = {'class': 'table table-hover table-headings',}
+
+class DeviceRoleTable(tables.Table):
+    device_count = tables.TemplateColumn(
+        template_code=DEVICEROLE_DEVICE_COUNT,
+        accessor=Accessor('devices.count'),
+        orderable=False,
+        verbose_name='Devices'
+    )
+
+    color = tables.TemplateColumn(COLOR_LABEL, verbose_name='Label')
+    # slug = tables.Column(verbose_name='Slug')
+    # actions = tables.TemplateColumn(
+    #     template_code=DEVICEROLE_ACTIONS,
+    #     attrs={'td': {'class': 'text-right noprint'}},
+    #     verbose_name=''
+    # )
+
+    class Meta:
+        model = DeviceRole
+        fields = ('name', 'device_count', 'color', 'description',)
+        attrs = {'class': 'table table-hover table-headings', }

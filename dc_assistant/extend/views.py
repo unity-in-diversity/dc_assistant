@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.contenttypes.models import ContentType
+from django_tables2 import RequestConfig
+from django.core.paginator import Paginator, Page
+from django.conf import settings
+
 
 class ListObjectsView(View):
     """
@@ -16,7 +20,6 @@ class ListObjectsView(View):
     table = None
     template_name = None
     #template_name = 'utilities/obj_list.html'
-    #action_buttons = ('add', 'import', 'export')
 
     def get(self, request):
 
@@ -29,6 +32,12 @@ class ListObjectsView(View):
         table = self.table(self.queryset)
         if 'pk' in table.base_columns:
             table.columns.show('pk')
+
+        paginate = {
+            'paginator_class': Paginator,
+            'per_page': request.GET.get('per_page', settings.PAGINATE_COUNT)
+        }
+        RequestConfig(request, paginate).configure(table)
 
         context = {
             'content_type': content_type,

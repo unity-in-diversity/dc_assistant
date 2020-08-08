@@ -11,7 +11,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from django.core.exceptions import ImproperlyConfigured
 
+try:
+    from dc_assistant import configuration
+except ImportError:
+    raise ImproperlyConfigured(
+        "Configuration file is not present. Please define dc_assistant/dc_assistant/configuration.py"
+    )
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -134,3 +141,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+PAGINATE_COUNT = getattr(configuration, 'PAGINATE_COUNT', 6)

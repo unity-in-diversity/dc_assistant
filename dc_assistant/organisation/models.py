@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
 from extend.models import TaggedItem, ImgAttach, LoggingModel
+from extend.forms import ColorField
 
 
 #TODO: в url.py каждого приложения определить пространство уролов используемое в функциях get_absolute_url моделей
@@ -228,8 +229,7 @@ class DeviceRole(LoggingModel):
         max_length=100,
         blank=True)
 
-    #color = colorfield
-    #TODO: добавить кастомное поле для цвет роли, и далее либо выбор из формы,  либо выбор из модели и передача в форму.
+    color = ColorField()
 
     class Meta:
         ordering = ['name']
@@ -336,7 +336,7 @@ class Device(LoggingModel):
         ordering = ('name', 'pk')
 
     def __str__(self):
-        return self.name
+        return self.display_name or super().__str__()
 
     def get_absolute_url(self):
         return reverse('organisation:device', args=[self.pk])
