@@ -1,8 +1,8 @@
 from django import forms
 from mptt.forms import TreeNodeChoiceField
 from taggit.forms import TagField
-from django.forms import ModelForm, Textarea, TextInput, NumberInput
-from .models import Region, Location, Rack, VendorModel, Vendor
+from django.forms import Textarea, TextInput, NumberInput
+from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole
 
 class StaticSelectWidget(forms.Select):
 
@@ -29,8 +29,9 @@ class SlugField(forms.SlugField):
 
 class RegionAddForm(forms.ModelForm):
     parent = TreeNodeChoiceField(label='Родитель', required=False, queryset=Region.objects.all(), level_indicator = u'-', widget=forms.Select(attrs={'class': 'form-control'}))
-    name = forms.CharField(label='Название региона')
-    slug = forms.CharField(label='Псевдоним')
+    name = forms.CharField(label='Название региона', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    #slug = forms.CharField(label='Псевдоним', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    slug = SlugField(slug_source='name', widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Region
@@ -39,8 +40,8 @@ class RegionAddForm(forms.ModelForm):
         )
 
 class LocationAddForm(forms.ModelForm):
-    name = forms.CharField()
-    slug = forms.SlugField()
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    slug = SlugField(slug_source='name', widget=forms.TextInput(attrs={'class': 'form-control'}))
     region = TreeNodeChoiceField(
         label='Регион',
         queryset=Region.objects.all(),
@@ -48,9 +49,9 @@ class LocationAddForm(forms.ModelForm):
         level_indicator=u'-',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-    physical_address = forms.CharField
-    description = forms.CharField
-    comment = forms.CharField
+    physical_address = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
 
 
     class Meta:
@@ -82,7 +83,8 @@ class RackAddForm(forms.ModelForm):
 class VendorModelAddForm(forms.ModelForm):
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), empty_label="------",
                                     widget=forms.Select(attrs={'class': 'select2 form-control'}))
-    slug = SlugField(slug_source='model')
+    #slug = SlugField(slug_source='model')
+    slug = SlugField(slug_source='model', widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = VendorModel
         fields = ['model', 'vendor', 'slug', 'u_height', 'front_image', 'rear_image', 'comment']
@@ -90,4 +92,15 @@ class VendorModelAddForm(forms.ModelForm):
             'model': TextInput(attrs={'class': 'form-control'}),
             'u_height': NumberInput(attrs={'class': 'form-control'}),
             'comment': Textarea(attrs={'class': 'form-control', 'rows': 5,}),
+        }
+
+class RoleModelAddForm(forms.ModelForm):
+    slug = SlugField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    class Meta:
+        model = DeviceRole
+        fields = ['name', 'slug', 'color', 'description',]
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'color': forms.Select(attrs={'class': 'select2 form-control custom-select select2-hidden-accessible'}),
+            'description': Textarea(attrs={'class': 'form-control', 'rows': 5, }),
         }

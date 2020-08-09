@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView, ListView
-from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm
+from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm, RoleModelAddForm
 from .models import Region, Location, Rack, VendorModel, Device, DeviceRole
 from extend.views import ListObjectsView
 from extend import filters
@@ -85,9 +85,10 @@ class RoleDeviceListView(ListObjectsView):
     template_name = 'organisation/roles_tab.html'
 
 class RoleDeviceAdd(CreateView):
-    pass
-
-
+    form_class = RoleModelAddForm
+    model = DeviceRole
+    success_url = reverse_lazy('organisation:role_list')
+    template_name = 'organisation/role_add.html'
 
 
 

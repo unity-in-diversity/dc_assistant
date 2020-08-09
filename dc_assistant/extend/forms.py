@@ -1,6 +1,7 @@
 from django import forms
 from django.db import models
 from django.core.validators import RegexValidator
+
 COLOR_CHOICES = (
     ('aa1409', 'Dark red'),
     ('f44336', 'Red'),
@@ -31,43 +32,6 @@ COLOR_CHOICES = (
     ('ffffff', 'White'),
 )
 
-
-# def add_blank_choice(choices):
-#     """
-#     Добавляет пустое поле в начало выбора
-#     """
-#     return ((None, '---------'),) + tuple(choices)
-
-# class ColorSelect(forms.Select):
-#     """
-#     Расширение для встроенного виджета Select чтобы раскрашивать каждую <опцию>.
-#     """
-#     option_template_name = 'widgets/colorselect_option.html'
-#     def __init__(self, *args, **kwargs):
-#         kwargs['choices'] = add_blank_choice(COLOR_CHOICES)
-#         super().__init__(*args, **kwargs)
-#         self.attrs['class'] = 'netbox-select2-color-picker'
-
-#сlass RackAddForm(forms.Form):
-#    racktype = forms.MultipleChoiceField(choices=RACK_TYPE_CHOICES, required=True)
-
-
-# class SlugWidget(forms.TextInput):
-#     """
-#     Subclass TextInput and add a slug regeneration button next to the form field.
-#     """
-#     template_name = 'organisation/sluginput.html'
-#
-# class SlugField(forms.SlugField):
-#     """
-#     Extend the built-in SlugField to automatically populate from a field called `name` unless otherwise specified.
-#     """
-#     def __init__(self, slug_source='name', *args, **kwargs):
-#         label = kwargs.pop('label', "Slug")
-#         help_text = kwargs.pop('help_text', "URL-friendly unique shorthand")
-#         widget = kwargs.pop('widget', SlugWidget)
-#         super().__init__(label=label, help_text=help_text, widget=widget, *args, **kwargs)
-#         self.widget.attrs['slug-source'] = slug_source
 ColorValidator = RegexValidator(
     regex='^[0-9a-f]{6}$',
     message='Enter a valid hexadecimal RGB color code.',

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from taggit.models import TagBase, GenericTaggedItemBase
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-import django_tables2 as tables
+
 
 __all__ = (
     'Tag',
