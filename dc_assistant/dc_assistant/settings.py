@@ -32,6 +32,10 @@ SECRET_KEY = '_r^9!7plgkf2u-ri^fga&c^1gohf@8x0=#rzgdq3f(a9gd*h!='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
 ALLOWED_HOSTS = []
 
 
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'mptt',
     'taggit',
     'django_tables2',
@@ -61,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'dc_assistant.urls'

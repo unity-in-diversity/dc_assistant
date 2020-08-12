@@ -20,11 +20,11 @@ class TreeNodeMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
 
 
 class LocationFilterSet(django_filters.FilterSet):
-    region_id = TreeNodeMultipleChoiceFilter(
-        queryset=Region.objects.all(),
-        field_name='region__in',
-        label='Region (ID)',
-    )
+    # region_id = TreeNodeMultipleChoiceFilter(
+    #     queryset=Region.objects.all(),
+    #     field_name='region__in',
+    #     label='Region (ID)',
+    # )
     region = TreeNodeMultipleChoiceFilter(
         queryset=Region.objects.all(),
         field_name='region__in',
