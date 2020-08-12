@@ -136,6 +136,13 @@ class Rack(LoggingModel):
             return self.name
         return ""
 
+    @property
+    def units(self):
+        if self.desc_units:
+            return range(1, self.u_height + 1)
+        else:
+            return reversed(range(1, self.u_height + 1))
+
 
 class Vendor(LoggingModel):
     """

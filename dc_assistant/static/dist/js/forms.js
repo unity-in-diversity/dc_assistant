@@ -104,7 +104,7 @@ $(document).ready(function() {
     }
 
     // Color Picker
-    $('.netbox-select2-color-picker').select2({
+    $('.dc-select2-color-picker').select2({
         allowClear: true,
         placeholder: "---------",
         theme: "bootstrap",
