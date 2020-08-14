@@ -107,7 +107,7 @@ class RoleModelAddForm(forms.ModelForm):
         }
 
 class DeviceAddForm(forms.ModelForm):
-        site = forms.ModelChoiceField(
+        location = forms.ModelChoiceField(
             queryset=Location.objects.all()
         )
         rack = forms.ModelChoiceField(
@@ -138,8 +138,8 @@ class DeviceAddForm(forms.ModelForm):
         class Meta:
             model = Device
             fields = [
-                'name', 'device_role', 'device_model', 'serial', 'location', 'rack', 'position', 'face',
-                'platform', 'description', 'comments'
+                'name', 'device_role', 'device_model', 'serial', 'location', 'rack', 'position', 'face_position',
+                'platform', 'description', 'comment'
             ]
             widgets = {
                 'face': StaticSelectWidget(),
