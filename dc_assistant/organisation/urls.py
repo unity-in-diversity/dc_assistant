@@ -20,6 +20,7 @@ urlpatterns = [
     path('roles/add', views.RoleDeviceAdd.as_view(), name='role_add'),
 
     path('devices/', views.DeviceListView.as_view(), name='device_list'),
+    path('devices/add', views.DeviceAdd.as_view(), name='device_add'),
     path('devices/<int:pk>/', views.DeviceView.as_view(), name='device'),
 
 ]

@@ -98,13 +98,10 @@ class DeviceAdd(CreateView):
     pass
 
 class DeviceListView(ListObjectsView):
-    queryset = Device.objects.prefetch_related(
-        'device_model__vendor', 'device_role', 'location', 'rack',
-    )
-    #filterset = filters.DeviceFilterSet
-    #filterset_form = forms.DeviceFilterForm
-    #table = tables.DeviceDetailTable
-    #template_name = 'dcim/device_list.html'
+    queryset = DeviceRole.objects.all()
+    table = DeviceRoleTable
+    success_url = reverse_lazy('organisation:role_list')
+    template_name = 'organisation/device_tab.html'
 
 class DeviceView(View):
     pass

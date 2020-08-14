@@ -7,6 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
 from extend.models import TaggedItem, ImgAttach, LoggingModel
 from extend.forms import ColorField
+from smart_selects.db_fields import ChainedForeignKey
 
 
 #TODO: в url.py каждого приложения определить пространство уролов используемое в функциях get_absolute_url моделей
@@ -293,12 +294,22 @@ class Device(LoggingModel):
         on_delete=models.PROTECT,
         related_name='devices')
 
-    rack = models.ForeignKey(
-        to=Rack,
-        on_delete=models.PROTECT,
+    # rack = models.ForeignKey(
+    #     to=Rack,
+    #     on_delete=models.PROTECT,
+    #     related_name='devices',
+    #     blank=True,
+    #     null=True)
+
+    rack = ChainedForeignKey(
+        Rack,
+        chained_field='location',
+        chained_model_field='location',
         related_name='devices',
-        blank=True,
-        null=True)
+        show_all=False,
+        auto_choose=True,
+        sort=True
+    )
 
     position = models.PositiveSmallIntegerField(
         blank=True,
