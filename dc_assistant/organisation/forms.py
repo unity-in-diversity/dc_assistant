@@ -2,7 +2,7 @@ from django import forms
 from mptt.forms import TreeNodeChoiceField
 from taggit.forms import TagField
 from django.forms import Textarea, TextInput, NumberInput
-from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole
+from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole, Device, Platform
 
 class StaticSelectWidget(forms.Select):
 
@@ -12,13 +12,14 @@ class StaticSelectWidget(forms.Select):
 
 class SlugWidget(forms.TextInput):
     """
-    Subclass TextInput and add a slug regeneration button next to the form field.
+    Тип поля основанный на TextInput с доп. шаблоном для автоматического формирования значения поля с помощью JS скрипта.
     """
     template_name = 'sluginput.html'
 
 class SlugField(forms.SlugField):
     """
-    Extend the built-in SlugField to automatically populate from a field called `name` unless otherwise specified.
+    Расширение встроенного поля SlugField позволяет автоматически формировать значение
+    поля исползуя значение поля `name` реализовано только для ENG.
     """
     def __init__(self, slug_source='name', *args, **kwargs):
         label = kwargs.pop('label', "Slug")
@@ -104,3 +105,42 @@ class RoleModelAddForm(forms.ModelForm):
             'color': forms.Select(attrs={'class': 'select2 form-control custom-select select2-hidden-accessible'}),
             'description': Textarea(attrs={'class': 'form-control', 'rows': 5, }),
         }
+
+class DeviceAddForm(forms.ModelForm):
+        site = forms.ModelChoiceField(
+            queryset=Location.objects.all()
+        )
+        rack = forms.ModelChoiceField(
+            queryset=Rack.objects.all(),
+            required=False,
+        )
+        position = forms.TypedChoiceField(
+            required=False,
+            empty_value=None,
+        )
+        vendor = forms.ModelChoiceField(
+            queryset=Vendor.objects.all(),
+            required=False,
+        )
+        device_model = forms.ModelChoiceField(
+            queryset=VendorModel.objects.all(),
+        )
+        device_role = forms.ModelChoiceField(
+            queryset=DeviceRole.objects.all(),
+        )
+        platform = forms.ModelChoiceField(
+            queryset=Platform.objects.all(),
+            required=False,
+        )
+        tags = TagField(required=False)
+        comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+        class Meta:
+            model = Device
+            fields = [
+                'name', 'device_role', 'device_model', 'serial', 'location', 'rack', 'position', 'face',
+                'platform', 'description', 'comments'
+            ]
+            widgets = {
+                'face': StaticSelectWidget(),
+            }

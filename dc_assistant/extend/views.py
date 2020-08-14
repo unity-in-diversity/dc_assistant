@@ -44,3 +44,6 @@ class ListObjectsView(View):
             'table': table,
         }
         return render(request, self.template_name, context)
+
+class TagListView(View):
+    pass

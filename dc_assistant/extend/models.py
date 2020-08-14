@@ -83,7 +83,7 @@ class ImgAttach(models.Model):
         auto_now_add=True)
 
     class Meta:
-        ordering = ('name', 'pk') #потому что имя может быть не уникальным
+        ordering = ('name', 'pk')
 
     def __str__(self):
         if self.name:

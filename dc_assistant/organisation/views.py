@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView, ListView
-from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm, RoleModelAddForm
+from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm, RoleModelAddForm, DeviceAddForm
 from .models import Region, Location, Rack, VendorModel, Device, DeviceRole
 from extend.views import ListObjectsView
 from extend import filters
@@ -75,8 +75,8 @@ class VendorModelAdd(CreateView):
     success_url = reverse_lazy('organisation:model_list')
     template_name = 'organisation/model_add.html'
 
-class VendorModelView(View):
-    pass
+# class VendorModelView(View):
+#     pass
 
 class RoleDeviceListView(ListObjectsView):
     queryset = DeviceRole.objects.all()
@@ -90,15 +90,16 @@ class RoleDeviceAdd(CreateView):
     success_url = reverse_lazy('organisation:role_list')
     template_name = 'organisation/role_add.html'
 
-
-
-
 class DeviceAdd(CreateView):
+    form_class = DeviceAddForm
+    model = Device
+    success_url = reverse_lazy('organisation:device_list')
+    template_name = 'organisation/device_add.html'
     pass
 
 class DeviceListView(ListObjectsView):
     queryset = Device.objects.prefetch_related(
-        'device_model__vendor', 'device_role', 'locaion', 'rack',
+        'device_model__vendor', 'device_role', 'location', 'rack',
     )
     #filterset = filters.DeviceFilterSet
     #filterset_form = forms.DeviceFilterForm
