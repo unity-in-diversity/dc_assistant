@@ -71,14 +71,15 @@ class RackAddForm(forms.ModelForm):
     name = forms.CharField(label='Rack Label', widget=forms.TextInput(attrs={'class': 'form-control'}))
     location = forms.ModelChoiceField(queryset=Location.objects.all(), empty_label="------", widget=forms.Select(attrs={'class': 'select2 form-control'}))
     u_height = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    desc_units = forms.BooleanField(label='Top to buttom', widget=forms.CheckboxInput(attrs={'class': 'form-control col-md-1'}))
+    #desc_units = forms.BooleanField(label='Top to buttom', widget=forms.CheckboxInput(attrs={'class': 'form-control col-md-1'}))
     comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Rack
         fields = ['name', 'location', 'u_height', 'desc_units', 'racktype', 'comment']
         widgets = {
-            'racktype': StaticSelectWidget()
+            'racktype': StaticSelectWidget(),
+            'desc_units': StaticSelectWidget()
         }
 
 class VendorModelAddForm(forms.ModelForm):

@@ -87,12 +87,21 @@ class Rack(LoggingModel):
     TYPE_WALLCABINET = 'wall-cabinet'
     TYPE_FLOORCABINET = 'floor-cabinet'
 
+    TOP_TO_BUTTOM = 0
+    BUTTOM_TO_TOP = 1
+
+
     RACK_TYPE_CHOICES = (
         (TYPE_1FRAME, 'Открытая стойка однорамочная'),
         (TYPE_2FRAME, 'Открытая стойка двухрамочная'),
         (TYPE_WALLCABINET, 'Серверный шкаф настенный'),
         (TYPE_FLOORCABINET, 'Серверный шкаф напольный'),
         )
+
+    RACK_UNIT_DESC = (
+        (TOP_TO_BUTTOM, 'Сверху вниз'),
+        (BUTTOM_TO_TOP, 'Снизу вверх'),
+    )
 
     name = models.CharField(
         max_length=50)
@@ -107,9 +116,10 @@ class Rack(LoggingModel):
         verbose_name='Unit Height',
         validators=[MinValueValidator(1), MaxValueValidator(100)])
 
-    desc_units = models.BooleanField(
-        default=False,
-        verbose_name='Top to buttom',
+    desc_units = models.PositiveSmallIntegerField(
+        choices=RACK_UNIT_DESC,
+        default=BUTTOM_TO_TOP,
+        verbose_name='Orientation',
         help_text='По умолчанию нумерация юнитов снизу вверх')
 
     racktype = models.CharField(
@@ -294,22 +304,12 @@ class Device(LoggingModel):
         on_delete=models.PROTECT,
         related_name='devices')
 
-    # rack = models.ForeignKey(
-    #     to=Rack,
-    #     on_delete=models.PROTECT,
-    #     related_name='devices',
-    #     blank=True,
-    #     null=True)
-
-    rack = ChainedForeignKey(
-        Rack,
-        chained_field='location',
-        chained_model_field='location',
+    rack = models.ForeignKey(
+        to=Rack,
+        on_delete=models.PROTECT,
         related_name='devices',
-        show_all=False,
-        auto_choose=True,
-        sort=True
-    )
+        blank=True,
+        null=True)
 
     position = models.PositiveSmallIntegerField(
         blank=True,

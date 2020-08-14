@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'taggit',
     'django_tables2',
     'django_filters',
-    'smart_selects',
     'extend',
     'organisation',
     'secret',
