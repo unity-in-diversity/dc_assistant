@@ -142,5 +142,5 @@ class DeviceAddForm(forms.ModelForm):
                 'platform', 'description', 'comment'
             ]
             widgets = {
-                'face': StaticSelectWidget(),
+                'face_position': StaticSelectWidget(),
             }
