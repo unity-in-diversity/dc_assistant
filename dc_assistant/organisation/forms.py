@@ -2,7 +2,8 @@ from django import forms
 from mptt.forms import TreeNodeChoiceField
 from taggit.forms import TagField
 from django.forms import Textarea, TextInput, NumberInput
-from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole, Device, Platform
+from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole, Device
+
 
 class StaticSelectWidget(forms.Select):
 
@@ -145,3 +146,4 @@ class DeviceAddForm(forms.ModelForm):
             widgets = {
                 'face_position': StaticSelectWidget(),
             }
+

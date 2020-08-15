@@ -147,13 +147,6 @@ class Rack(LoggingModel):
             return self.name
         return ""
 
-    @property
-    def units(self):
-        if self.desc_units:
-            return range(1, self.u_height + 1)
-        else:
-            return reversed(range(1, self.u_height + 1))
-
 
 class Vendor(LoggingModel):
     """
@@ -354,7 +347,7 @@ class Device(LoggingModel):
         ordering = ('name', 'pk')
 
     def __str__(self):
-        return self.display_name or super().__str__()
+        return self.name
 
     def get_absolute_url(self):
         return reverse('organisation:device', args=[self.pk])

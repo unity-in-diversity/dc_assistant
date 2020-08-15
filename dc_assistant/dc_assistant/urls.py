@@ -16,13 +16,11 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include, url
+from django.conf.urls import include
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #url(r'^admin/', include(admin.site.urls)),
-    url(r'^chaining/', include('smart_selects.urls')),
     path('', views.main_view),
     path('organisation/', include('organisation.urls')),
     path('extend/', include('extend.urls')),
