@@ -23,6 +23,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/select2-bootstrap-0.1.0-beta.10/select2-bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/font-awesome-4.7.0/css/font-awesome.min.css' %}">
     <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/libs/tag/bootstrap-tagsinput.css' %}">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>-->
@@ -204,6 +205,7 @@
             <!-- footer -->
             <!-- ============================================================== -->
             <footer class="footer text-center">
+
                 All Rights Reserved. Designed and Developed by Dekin M <a href="https://ya.ru"> Personal Site </a>.
             </footer>
             <!-- ============================================================== -->
@@ -220,6 +222,12 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+
+
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
     <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
     <!-- Bootstrap tether Core JavaScript -->
     <script src="{% static 'assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
@@ -258,57 +266,7 @@
     <script src="{% static 'assets/libs/jquery-minicolors/jquery.minicolors.min.js' %}"></script>
     <script src="{% static 'assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
     <script src="{% static 'assets/libs/quill/dist/quill.min.js' %}"></script>
-
-    <script>
-        /****************************************
-         *       Basic Table                   *
-         ****************************************/
-        $('#zero_config').DataTable();
-    </script>
-
-    <script>
-        //***********************************//
-        // For select 2
-        //***********************************//
-        $(".select2").select2();
-
-        /*colorpicker*/
-        $('.demo').each(function() {
-        //
-        // Dear reader, it's actually very easy to initialize MiniColors. For example:
-        //
-        //  $(selector).minicolors();
-        //
-        // The way I've done it below is just for the demo, so don't get confused
-        // by it. Also, data- attributes aren't supported at this time...they're
-        // only used for this demo.
-        //
-        $(this).minicolors({
-                control: $(this).attr('data-control') || 'hue',
-                position: $(this).attr('data-position') || 'bottom left',
-
-                change: function(value, opacity) {
-                    if (!value) return;
-                    if (opacity) value += ', ' + opacity;
-                    if (typeof console === 'object') {
-                        console.log(value);
-                    }
-                },
-                theme: 'bootstrap'
-            });
-
-        });
-        /*datwpicker*/
-        jQuery('.mydatepicker').datepicker();
-        jQuery('#datepicker-autoclose').datepicker({
-            autoclose: true,
-            todayHighlight: true
-        });
-        var quill = new Quill('#editor', {
-            theme: 'snow'
-        });
-
-    </script>
+    <script src="{% static 'assets/libs/tag/bootstrap-tagsinput.js' %}"></script>
 
 </body>
 

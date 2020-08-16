@@ -4,6 +4,9 @@ from django.contrib.contenttypes.models import ContentType
 from django_tables2 import RequestConfig
 from django.core.paginator import Paginator, Page
 from django.conf import settings
+from organisation.models import Rack, Location
+
+from dal import autocomplete
 
 
 class ListObjectsView(View):
@@ -47,3 +50,22 @@ class ListObjectsView(View):
 
 class TagListView(View):
     pass
+
+class RackAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # if not self.request.user.is_authenticated:
+        #     return Rack.objects.none()
+
+        qs = Rack.objects.all()
+        print(qs)
+
+        location = self.forwarded.get('location', None)
+        print(location)
+
+        if location:
+            qs = qs.filter(location=location)
+
+        # if self.q:
+        #     qs = qs.filter(name__istartswith=self.q)
+
+        return qs

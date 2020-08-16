@@ -1,3 +1,4 @@
+from dal import autocomplete
 from django import forms
 from mptt.forms import TreeNodeChoiceField
 from taggit.forms import TagField
@@ -30,7 +31,7 @@ class SlugField(forms.SlugField):
         self.widget.attrs['slug-source'] = slug_source
 
 class RegionAddForm(forms.ModelForm):
-    parent = TreeNodeChoiceField(label='Родитель', required=False, queryset=Region.objects.all(), level_indicator = u'-', widget=forms.Select(attrs={'class': 'form-control'}))
+    parent = TreeNodeChoiceField(label='Родитель', required=False, queryset=Region.objects.all(), level_indicator = u'-', widget=forms.Select(attrs={'class': 'select2 form-control custom-select'}))
     name = forms.CharField(label='Название региона', widget=forms.TextInput(attrs={'class': 'form-control'}))
     #slug = forms.CharField(label='Псевдоним', widget=forms.TextInput(attrs={'class': 'form-control'}))
     slug = SlugField(slug_source='name', widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -70,7 +71,7 @@ class LocationAddForm(forms.ModelForm):
 
 class RackAddForm(forms.ModelForm):
     name = forms.CharField(label='Rack Label', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    location = forms.ModelChoiceField(queryset=Location.objects.all(), empty_label="------", widget=forms.Select(attrs={'class': 'select2 form-control'}))
+    location = forms.ModelChoiceField(queryset=Location.objects.all(), empty_label="------", widget=forms.Select(attrs={'class': 'select2 form-control custom-select'}))
     u_height = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
     #desc_units = forms.BooleanField(label='Top to buttom', widget=forms.CheckboxInput(attrs={'class': 'form-control col-md-1'}))
     comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
@@ -85,7 +86,7 @@ class RackAddForm(forms.ModelForm):
 
 class VendorModelAddForm(forms.ModelForm):
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), empty_label="------",
-                                    widget=forms.Select(attrs={'class': 'select2 form-control'}))
+                                    widget=forms.Select(attrs={'class': 'select2 form-control custom-select'}))
     #slug = SlugField(slug_source='model')
     slug = SlugField(slug_source='model', widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
@@ -108,42 +109,70 @@ class RoleModelAddForm(forms.ModelForm):
             'description': Textarea(attrs={'class': 'form-control', 'rows': 5, }),
         }
 
+# class DeviceAddForm(forms.ModelForm):
+#         # location = forms.ModelChoiceField(
+#         #     queryset=Location.objects.all()
+#         # )
+#         # rack = forms.ModelChoiceField(
+#         #     queryset=Rack.objects.all(),
+#         #     required=False,
+#         # )
+#         # position = forms.TypedChoiceField(
+#         #     required=False,
+#         #     empty_value=None,
+#         # )
+#         # vendor = forms.ModelChoiceField(
+#         #     queryset=Vendor.objects.all(),
+#         #     required=False,
+#         # )
+#         # device_model = forms.ModelChoiceField(
+#         #     queryset=VendorModel.objects.all(),
+#         # )
+#         # device_role = forms.ModelChoiceField(
+#         #     queryset=DeviceRole.objects.all(),
+#         # )
+#         # platform = forms.ModelChoiceField(
+#         #     queryset=Platform.objects.all(),
+#         #     required=False,
+#         # )
+#         tags = TagField(required=False)
+#         comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+#
+#         class Meta:
+#             model = Device
+#             fields = [
+#                 'name', 'device_role', 'device_model', 'serial', 'location', 'rack', 'position', 'face_position',
+#                 'platform', 'description', 'comment'
+#             ]
+#             widgets = {
+#                 'face_position': StaticSelectWidget(),
+#             }
+
 class DeviceAddForm(forms.ModelForm):
-        # location = forms.ModelChoiceField(
-        #     queryset=Location.objects.all()
-        # )
-        # rack = forms.ModelChoiceField(
-        #     queryset=Rack.objects.all(),
-        #     required=False,
-        # )
-        # position = forms.TypedChoiceField(
-        #     required=False,
-        #     empty_value=None,
-        # )
-        # vendor = forms.ModelChoiceField(
-        #     queryset=Vendor.objects.all(),
-        #     required=False,
-        # )
-        # device_model = forms.ModelChoiceField(
-        #     queryset=VendorModel.objects.all(),
-        # )
-        # device_role = forms.ModelChoiceField(
-        #     queryset=DeviceRole.objects.all(),
-        # )
-        # platform = forms.ModelChoiceField(
-        #     queryset=Platform.objects.all(),
-        #     required=False,
-        # )
-        tags = TagField(required=False)
-        comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    location = forms.ModelChoiceField(
+                queryset=Location.objects.all(),
+                required=False, widget=forms.Select(attrs={'class': 'select2 form-control custom-select'})
+            )
+    tag = TagField(help_text="Вводить через запятую", widget=TextInput(attrs={'data-role': 'tagsinput'}))
 
-        class Meta:
-            model = Device
-            fields = [
-                'name', 'device_role', 'device_model', 'serial', 'location', 'rack', 'position', 'face_position',
-                'platform', 'description', 'comment'
+    #tag = TagField()
+
+    class Meta:
+        model = Device
+        fields = [
+            'name', 'device_role', 'device_model', 'serial', 'location', 'rack', 'position', 'face_position',
+            'platform', 'description', 'comment', 'tag',
             ]
-            widgets = {
-                'face_position': StaticSelectWidget(),
-            }
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'device_role': forms.Select(attrs={'class': 'select2 form-control custom-select'}),
+            'device_model': forms.Select(attrs={'class': 'select2 form-control custom-select'}),
+            'serial': TextInput(attrs={'class': 'form-control'}),
+            'rack': autocomplete.ModelSelect2(url='extend:rack-autocomplete', forward=['location']),
+            'position': NumberInput(attrs={'class': 'form-control'}),
+            'face_position': StaticSelectWidget(),
+            'platform': forms.Select(attrs={'class': 'select2 form-control custom-select'}),
+            'description': Textarea(attrs={'class': 'form-control', 'rows': 5, }),
+            'comment': Textarea(attrs={'class': 'form-control', 'rows': 5, })
 
+        }

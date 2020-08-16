@@ -133,19 +133,23 @@ class Rack(LoggingModel):
     class Meta:
         ordering = ('location', 'name', 'pk')
 
+
     def __str__(self):
-        return self.display_name or super().__str__()
+        return self.name
+
+    # def __str__(self):
+    #     return self.display_name or super().__str__()
 
     def get_absolute_url(self):
         return reverse('organisation:rack', args=[self.pk])
 
-    @property
-    def display_name(self):
-        if self.location:
-            return "{} ({})".format(self.name, self.location)
-        elif self.name:
-            return self.name
-        return ""
+    # @property
+    # def display_name(self):
+    #     if self.location:
+    #         return "{} ({})".format(self.name, self.location)
+    #     elif self.name:
+    #         return self.name
+    #     return ""
 
 
 class Vendor(LoggingModel):
@@ -204,6 +208,9 @@ class VendorModel(LoggingModel):
 
     @property
     def display_name(self):
+        return '{} {}'.format(self.vendor.name, self.model)
+
+    def __str__(self):
         return '{} {}'.format(self.vendor.name, self.model)
 
 

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from taggit.models import TagBase, GenericTaggedItemBase
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-
+from extend.forms import ColorField
 
 __all__ = (
     'Tag',
@@ -14,7 +14,13 @@ __all__ = (
 
 class Tag(TagBase):
 
-    date = models.DateTimeField(auto_now_add=True)
+    color = ColorField(
+        default='9e9e9e'
+    )
+    comments = models.TextField(
+        blank=True,
+        default=''
+    )
 
     class Meta:
         verbose_name = _("Tag")
@@ -32,12 +38,13 @@ class Tag(TagBase):
 class TaggedItem(GenericTaggedItemBase):
 
     tag = models.ForeignKey(
-        to=Tag,
+        Tag,
+        on_delete=models.CASCADE,
         related_name="%(app_label)s_%(class)s_items",
-        on_delete=models.CASCADE)
+    )
 
-    class Meta:
-        index_together = (("content_type", "object_id"))
+    # class Meta:
+    #     index_together = (("content_type", "object_id"))
 
 
 def img_upload(instance, filename):

@@ -42,6 +42,8 @@ JQUERY_URL = True
 # Application definition
 
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'mptt',
-    'taggit',
+#    'taggit',
     'django_tables2',
     'django_filters',
     'extend',
@@ -149,3 +151,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PAGINATE_COUNT = getattr(configuration, 'PAGINATE_COUNT', 6)
+
+TAGGIT_CASE_INSENSITIVE = True
