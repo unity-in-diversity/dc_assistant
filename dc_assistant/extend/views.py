@@ -57,7 +57,7 @@ class RackAutocomplete(autocomplete.Select2QuerySetView):
         #     return Rack.objects.none()
 
         qs = Rack.objects.all()
-        print(qs)
+        #print(qs)
 
         location = self.forwarded.get('location', None)
         print(location)

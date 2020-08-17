@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Count
 #from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
@@ -41,13 +41,25 @@ class LocationAdd(CreateView):
     template_name = 'organisation/location_add.html'
 
 class LocationView(View):
-    pass
+
+    def get(self, request, slug):
+        location = get_object_or_404(Location.objects.prefetch_related('region'), slug=slug)
+        stats = {
+            'rack_count': Rack.objects.filter(location=location).count(),
+            'device_count': Device.objects.filter(location=location).count(),
+        }
+
+        return render(request, 'organisation/location.html', {
+            'location': location,
+            'stats': stats,
+        })
 
 
 class RackListView(ListObjectsView):
     #queryset = Rack.objects.all()
     queryset = Rack.objects.prefetch_related('location').annotate(device_count=Count('devices'))
     #table_class = RackTable
+    filterset = filters.RackFilterSet
     table = RackTable
     success_url = reverse_lazy('organisation:rack_list')
     template_name = 'organisation/racks_tab.html'

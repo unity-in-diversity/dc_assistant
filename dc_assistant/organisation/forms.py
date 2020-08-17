@@ -109,44 +109,6 @@ class RoleModelAddForm(forms.ModelForm):
             'description': Textarea(attrs={'class': 'form-control', 'rows': 5, }),
         }
 
-# class DeviceAddForm(forms.ModelForm):
-#         # location = forms.ModelChoiceField(
-#         #     queryset=Location.objects.all()
-#         # )
-#         # rack = forms.ModelChoiceField(
-#         #     queryset=Rack.objects.all(),
-#         #     required=False,
-#         # )
-#         # position = forms.TypedChoiceField(
-#         #     required=False,
-#         #     empty_value=None,
-#         # )
-#         # vendor = forms.ModelChoiceField(
-#         #     queryset=Vendor.objects.all(),
-#         #     required=False,
-#         # )
-#         # device_model = forms.ModelChoiceField(
-#         #     queryset=VendorModel.objects.all(),
-#         # )
-#         # device_role = forms.ModelChoiceField(
-#         #     queryset=DeviceRole.objects.all(),
-#         # )
-#         # platform = forms.ModelChoiceField(
-#         #     queryset=Platform.objects.all(),
-#         #     required=False,
-#         # )
-#         tags = TagField(required=False)
-#         comment = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
-#
-#         class Meta:
-#             model = Device
-#             fields = [
-#                 'name', 'device_role', 'device_model', 'serial', 'location', 'rack', 'position', 'face_position',
-#                 'platform', 'description', 'comment'
-#             ]
-#             widgets = {
-#                 'face_position': StaticSelectWidget(),
-#             }
 
 class DeviceAddForm(forms.ModelForm):
     location = forms.ModelChoiceField(
