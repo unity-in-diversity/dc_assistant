@@ -4,125 +4,173 @@
 
 {% block content %}
 
-  <h2 class="card-title">{{ location }}</h2>
-
         <!-- ============================================================== -->
         <!-- Buttons-->
         <!-- ============================================================== -->
+<!--<div class="row">  text-center-->
+
          <div class="container-fluid">
-            <div class="row justify-content-end">
-                <div class="col-md-auto col-sm-auto">
+            <div class="row ">
+                <div class="col-md-6 col-sm-6">
+                    <h2 class="card-title">{{ location }}</h2>
+                </div>
+                <div class="col-md-4 col-sm-4 text-right">
 <!--                    <a class="btn btn-warning btn-lg" href="{% url 'organisation:location_add' %}" role="button">Add</a>-->
                     <a class="btn btn-warning btn-lg" href="#" role="button">Edit</a>
                     <a class="btn btn-danger btn-lg" href="#" role="button">Delete</a>
                 </div>
             </div>
          </div>
+<!--    </div>-->
          <hr>
+
+
         <!-- ============================================================== -->
         <!-- End Buttons-->
         <!-- ============================================================== -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
 
-<div class="row">
-	<div class="col-md-7">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>Location</strong>
-            </div>
-            <table class="table table-hover panel-body attr-table">
-                <tr>
-                    <td>Region</td>
-                    <td>
-                        {% if location.region %}
-                            {% for region in location.region.get_ancestors %}
-                                <a href="{{ region.get_absolute_url }}">{{ region }}</a>
-<!--                                <i class="fa fa-angle-right"></i>-->
-                            {% endfor %}
-                            <a href="{{ location.region.get_absolute_url }}">{{ location.region }}</a>
-                        {% else %}
-                            <span class="text-muted">None</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Description</td>
-                    <td>{{ location.description }}</td>
-                </tr>
-            </table>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>Contact Info</strong>
-            </div>
-            <table class="table table-hover panel-body attr-table">
-                <tr>
-                    <td>Physical Address</td>
-                    <td>
-                        {% if location.physical_address %}
-                            <div class="pull-right noprint">
-                                <a href="#">
-                                </a>
+ <!-- Tabs -->
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="{{ location.get_absolute_url }}" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Location</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">ChangeLogs</span></a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content tabcontent-border">
+                                <div class="tab-pane active" id="home" role="tabpanel">
+                                    <div class="p-20">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title m-b-0">Location</h4>
+                                                    </div>
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Region</td>
+                                                                <td>
+                                                                    {% if location.region %}
+                                                                        {% for region in location.region.get_ancestors %}
+                                                                            <a href="{{ region.get_absolute_url }}">{{ region }}</a>
+                                            <!--                                <i class="fa fa-angle-right"></i>-->
+                                                                        {% endfor %}
+                                                                        <a href="{{ location.region.get_absolute_url }}">{{ location.region }}</a>
+                                                                    {% else %}
+                                                                        <span class="text-muted">None</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Description</td>
+                                                                <td>{{ location.description }}</td>
+                                                            </tr>
+                                                      </tbody>
+                                                    </table>
+                                                </div>
+
+
+                                            <div class="col-md-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title m-b-0">Statistics</h4>
+                                                        <div class="row panel-body">
+
+                                                            <div class="col-md-3">
+                                                                <div class="card card-hover">
+                                                                    <div class="box bg-cyan text-center" >
+                                                                        <h1 class="font-light text-white"><i class="mdi mdi-view-dashboard"></i></h1>
+                                                                        <h2 class="text-white">Racks</h2>
+                                                                        <h2 class="text-white"><a href="{% url 'organisation:rack_list' %}?location={{ location.slug }}">{{ stats.rack_count }}</a></h2>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="card card-hover">
+                                                                    <div class="box bg-success text-center" >
+                                                                        <h1 class="font-light text-white"><i class="mdi mdi-view-dashboard"></i></h1>
+                                                                        <h2 class="text-white">Devices</h2>
+                                                                        <h2 class="text-white"><a href="{% url 'organisation:device_list' %}?location={{ location.slug }}">{{ stats.device_count }}</a></h2>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title m-b-0">Contact Info</h4>
+                                                    </div>
+                                                    <table class="table table-hover panel-body attr-table">
+                                                            <tr>
+                                                                <td>Physical Address</td>
+                                                                <td>
+                                                                    {% if location.physical_address %}
+                                                                        <div class="pull-right noprint">
+                                                                            <a href="#">
+                                                                            </a>
+                                                                        </div>
+                                                                        <span>{{ location.physical_address }}</span>
+                                                                    {% else %}
+                                                                        <span class="text-muted">&mdash;</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Sysadmin Contact Name</td>
+                                                                <td> Тут контакт сисадмина </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Sysadmin Contact Phone</td>
+                                                                <td> Тут телефон сисадмина </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Sysadmin Contact E-Mail</td>
+                                                                <td> Тут имэйл сисадмина </td>
+                                                            </tr>
+                                                        </table>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Comment</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="alert alert-secondary" role="alert">
+                                                          {% if location.comment %}
+                                                                {{ location.comment }}
+                                                            {% else %}
+                                                                <span class="text-muted">None</span>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane active" id="profile" role="tabpanel1">
+                                    <div class="p-20">
+
+
+                                    </div>
+                                </div>
+
                             </div>
-                            <span>{{ location.physical_address }}</span>
-                        {% else %}
-                            <span class="text-muted">&mdash;</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Sysadmin Contact Name</td>
-                    <td> Тут контакт сисадмина </td>
-                </tr>
-                <tr>
-                    <td>Sysadmin Contact Phone</td>
-                    <td> Тут телефон сисадмина </td>
-                </tr>
-                <tr>
-                    <td>Sysadmin Contact E-Mail</td>
-                    <td> Тут имэйл сисадмина </td>
-                </tr>
-            </table>
-        </div>
+                        </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>Comment</strong>
-            </div>
-            <div class="panel-body rendered-markdown">
-                {% if location.comment %}
-                    {{ location.comment }}
-                {% else %}
-                    <span class="text-muted">None</span>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-5">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>Stats</strong>
-            </div>
-            <div class="row panel-body">
-                <div class="col-md-4 text-center">
-                    <h2><a href="{% url 'organisation:rack_list' %}?location={{ location.slug }}" class="btn {% if stats.rack_count %}btn-primary{% else %}btn-default{% endif %} btn-lg">{{ stats.rack_count }}</a></h2>
-                    <p>Racks</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h2><a href="{% url 'organisation:device_list' %}?location={{ location.slug }}" class="btn {% if stats.device_count %}btn-primary{% else %}btn-default{% endif %} btn-lg">{{ stats.device_count }}</a></h2>
-                    <p>Devices</p>
-                </div>
-            </div>
-        </div>
 
-	</div>
-</div>
 
-                </div>
-            </div>
-        </div>
 {% endblock %}
 
 
