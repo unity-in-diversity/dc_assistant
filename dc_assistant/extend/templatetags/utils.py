@@ -24,3 +24,13 @@ def fgcolor(value):
         return ''
     return '#{}'.format(foreground_color(value))
 
+@register.inclusion_tag('extend/tag.html')
+def tag(tag, url_name=None):
+    """
+    Display a tag, optionally linked to a filtered list of objects.
+    """
+    return {
+        'tag': tag,
+        'url_name': url_name,
+    }
+

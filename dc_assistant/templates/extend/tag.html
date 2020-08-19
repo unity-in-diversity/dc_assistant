@@ -1,0 +1,5 @@
+{% load utils %}
+
+{% if url_name %}<a href="{% url url_name %}?tag={{ tag.slug }}">{% endif %}
+<span class="badge badge-pill badge-info text-center" style="color: {{ tag.color|fgcolor }}; background-color: #{{ tag.color }}">{{ tag }}</span>
+{% if url_name %}</a>{% endif %}

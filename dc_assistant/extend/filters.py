@@ -2,6 +2,7 @@ import django_filters
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from organisation.models import Region, Location, Vendor, VendorModel, Rack
+from extend.models import Tag
 
 class TreeNodeMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
     """
@@ -18,6 +19,20 @@ class TreeNodeMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
         value = [node.get_descendants(include_self=True) if not isinstance(node, str) else node for node in value]
         return super().filter(qs, value)
 
+class TagFilter(django_filters.ModelMultipleChoiceFilter):
+    """
+    Match on one or more assigned tags. If multiple tags are specified (e.g. ?tag=foo&tag=bar), the queryset is filtered
+    to objects matching all tags.
+    """
+    def __init__(self, *args, **kwargs):
+
+        kwargs.setdefault('field_name', 'tag__slug')
+        kwargs.setdefault('to_field_name', 'slug')
+        kwargs.setdefault('conjoined', True)
+        kwargs.setdefault('queryset', Tag.objects.all())
+
+        super().__init__(*args, **kwargs)
+
 
 class LocationFilterSet(django_filters.FilterSet):
     # region_id = TreeNodeMultipleChoiceFilter(
@@ -31,6 +46,9 @@ class LocationFilterSet(django_filters.FilterSet):
         to_field_name='slug',
         label='Region (slug)',
     )
+
+    tag = TagFilter()
+
     class Meta:
         model = Location
         fields = [

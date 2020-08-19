@@ -69,6 +69,8 @@ class Location(LoggingModel):
     comment = models.TextField(
         blank=True)
 
+    tag = TaggableManager(through=TaggedItem)
+
     class Meta:
         ordering = ('name',)
 

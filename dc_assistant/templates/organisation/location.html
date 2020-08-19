@@ -81,8 +81,8 @@
                                                                 <div class="card card-hover">
                                                                     <div class="box bg-cyan text-center" >
                                                                         <h1 class="font-light text-white"><i class="mdi mdi-view-dashboard"></i></h1>
-                                                                        <h2 class="text-white">Racks</h2>
-                                                                        <h2 class="text-white"><a href="{% url 'organisation:rack_list' %}?location={{ location.slug }}">{{ stats.rack_count }}</a></h2>
+                                                                        <h3 class="text-white">Racks</h3>
+                                                                        <h3 class="text-white"><a href="{% url 'organisation:rack_list' %}?location={{ location.slug }}">{{ stats.rack_count }}</a></h3>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -90,9 +90,9 @@
                                                             <div class="col-md-3">
                                                                 <div class="card card-hover">
                                                                     <div class="box bg-success text-center" >
-                                                                        <h1 class="font-light text-white"><i class="mdi mdi-view-dashboard"></i></h1>
-                                                                        <h2 class="text-white">Devices</h2>
-                                                                        <h2 class="text-white"><a href="{% url 'organisation:device_list' %}?location={{ location.slug }}">{{ stats.device_count }}</a></h2>
+                                                                        <h1 class="font-light text-white"><i class="mdi mdi-border-outside"></i></h1>
+                                                                        <h3 class="text-white">Devices</h3>
+                                                                        <h3 class="text-white"><a href="{% url 'organisation:device_list' %}?location={{ location.slug }}">{{ stats.device_count }}</a></h3>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -135,6 +135,9 @@
                                                             </tr>
                                                         </table>
                                             </div>
+
+                                               {% include 'extend/tags_panel.html' with tags=location.tag.all url='organisation:location_list' %}
+
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
