@@ -106,3 +106,6 @@ class DeviceModelFilterSet(django_filters.FilterSet):
         fields = [
             'model', 'slug',
         ]
+
+class DeviceFilterSet(django_filters.FilterSet):
+    pass

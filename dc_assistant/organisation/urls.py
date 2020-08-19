@@ -15,7 +15,7 @@ urlpatterns = [
     path('racks/<int:pk>/', views.RackView.as_view(), name='rack'),
     path('models/', views.VendorModelListView.as_view(), name='model_list'),
     path('models/add', views.VendorModelAdd.as_view(), name='model_add'),
-    #path('models/<int:pk>/', views.VendorModelView.as_view(), name='model'),
+    path('models/<int:pk>/', views.VendorModelView.as_view(), name='vendormodel'),
     path('roles/', views.RoleDeviceListView.as_view(), name='role_list'),
     path('roles/add', views.RoleDeviceAdd.as_view(), name='role_add'),
 

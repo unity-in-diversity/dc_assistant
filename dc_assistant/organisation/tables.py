@@ -1,7 +1,7 @@
 import django_tables2 as tables
 #from extend.tables import BaseTable
 from django_tables2.utils import Accessor
-from .models import Location, Rack, VendorModel, DeviceRole
+from .models import Location, Rack, VendorModel, DeviceRole, Device
 
 SITE_REGION_LINK = """
 {% if record.region %}
@@ -21,6 +21,17 @@ DEVICEMODEL_INSTANCES_TEMPLATE = """
 
 DEVICEROLE_DEVICE_COUNT = """
 <a href="{% url 'organisation:device_list' %}?role={{ record.slug }}">{{ value }}</a>
+"""
+
+DEVICE_LINK = """
+<a href="{% url 'organisation:device' pk=record.pk %}">
+    {{ record.name|default:'<span class="label label-info">Unnamed device</span>' }}
+</a>
+"""
+
+DEVICE_ROLE = """
+{% load utils %}
+<label class="label" style="color: {{ record.device_role.color|fgcolor }}; background-color: #{{ record.device_role.color }}">{{ value }}</label>
 """
 
 COLOR_LABEL = """
@@ -81,4 +92,23 @@ class DeviceRoleTable(tables.Table):
     class Meta:
         model = DeviceRole
         fields = ('name', 'device_count', 'color', 'description',)
+        attrs = {'class': 'table table-hover table-headings', }
+
+class DeviceTable(tables.Table):
+    name = tables.TemplateColumn(
+        order_by=('name',),
+        template_code=DEVICE_LINK
+    )
+    location = tables.LinkColumn('organisation:location', args=[Accessor('location.slug')])
+    rack = tables.LinkColumn('organisation:rack', args=[Accessor('rack.pk')])
+    device_role = tables.TemplateColumn(DEVICE_ROLE, verbose_name='Role')
+    # device_model = tables.LinkColumn(
+    #     'organisation:vendormodel', args=[Accessor('device_model.pk')], verbose_name='Model',
+    #     text=lambda record: record.device_model.display_name
+    # )
+
+
+    class Meta():
+        model = Device
+        fields = ('name', 'device_role', 'device_model', 'location', 'rack',)
         attrs = {'class': 'table table-hover table-headings', }

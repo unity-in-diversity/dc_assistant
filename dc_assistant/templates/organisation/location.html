@@ -7,8 +7,6 @@
         <!-- ============================================================== -->
         <!-- Buttons-->
         <!-- ============================================================== -->
-<!--<div class="row">  text-center-->
-
          <div class="container-fluid">
             <div class="row ">
                 <div class="col-md-6 col-sm-6">
@@ -21,20 +19,16 @@
                 </div>
             </div>
          </div>
-<!--    </div>-->
          <hr>
-
-
         <!-- ============================================================== -->
         <!-- End Buttons-->
         <!-- ============================================================== -->
-
  <!-- Tabs -->
                         <div class="card">
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="{{ location.get_absolute_url }}" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Location</span></a> </li>
-                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">ChangeLogs</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">ChangeLogs</span></a> </li>
                             </ul>
                             <!-- Tab panes -->
                             <div class="tab-content tabcontent-border">
@@ -145,7 +139,7 @@
                                                     <div>
                                                         <h4 class="card-title m-b-0">Comment</h4>
                                                     </div>
-                                                    <div class="card-body">
+
                                                         <div class="alert alert-secondary" role="alert">
                                                           {% if location.comment %}
                                                                 {{ location.comment }}
@@ -153,7 +147,7 @@
                                                                 <span class="text-muted">None</span>
                                                             {% endif %}
                                                         </div>
-                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -168,7 +162,6 @@
 
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 
