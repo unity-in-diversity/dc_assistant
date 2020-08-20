@@ -1,7 +1,7 @@
 import django_filters
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from organisation.models import Region, Location, Vendor, VendorModel, Rack
+from organisation.models import Region, Location, Vendor, VendorModel, Rack, DeviceRole
 from extend.models import Tag
 
 class TreeNodeMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
@@ -108,4 +108,26 @@ class DeviceModelFilterSet(django_filters.FilterSet):
         ]
 
 class DeviceFilterSet(django_filters.FilterSet):
-    pass
+
+    rack_id = django_filters.ModelMultipleChoiceFilter(
+        field_name='rack',
+        queryset=Rack.objects.all(),
+        label='Rack (ID)',
+    )
+
+    role = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_role__slug',
+        queryset=DeviceRole.objects.all(),
+        to_field_name='slug',
+        label='Role (slug)',
+    )
+
+    device_model_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=VendorModel.objects.all(),
+        label='Device type (ID)',
+    )
+    vendor_id = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_model__vendor',
+        queryset=Vendor.objects.all(),
+        label='Manufacturer (ID)',
+    )

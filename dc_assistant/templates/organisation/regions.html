@@ -30,12 +30,6 @@
                             <table class="table">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>
-                                            <label class="customcheckbox m-b-20">
-                                                <input type="checkbox" id="mainCheckbox" />
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </th>
                                         <th scope="col">Parent</th>
                                         <th scope="col">Name</th>
                                         <th scope="col"></th>
@@ -44,12 +38,6 @@
                                 {% for region in regions %}
                                 <tbody class="customtable">
                                     <tr>
-                                        <th>
-                                            <label class="customcheckbox">
-                                                <input type="checkbox" class="listCheckbox" />
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </th>
                                         <td>{{region.parent}}</td>
                                         <td>{{region.name}}</td>
                                         <td>Кнопки Edit Delete</td>
