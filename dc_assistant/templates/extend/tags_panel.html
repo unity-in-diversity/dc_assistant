@@ -1,18 +1,12 @@
 {% load utils %}
 
-<div class="col-md-6">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title m-b-0">Tags</h4>
-        </div>
-        <div class="card-body">
 
-            {% for tag in tags %}
-                {% tag tag url %}
-            {% empty %}
-                <span class="text-muted">No tags</span>
-            {% endfor %}
+    <div class="card-body">
 
-        </div>
+        {% for tag in tags %}
+            {% tag tag url %}
+        {% empty %}
+            <span class="text-muted">No tags</span>
+        {% endfor %}
+
     </div>
-</div>

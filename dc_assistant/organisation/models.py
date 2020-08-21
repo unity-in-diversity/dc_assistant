@@ -205,8 +205,8 @@ class VendorModel(LoggingModel):
     comment = models.TextField(
         blank=True)
 
-    def get_absolute_url(self):
-        return reverse('organisation:vendormodel', args=[self.pk])
+    # def get_absolute_url(self):
+    #     return reverse('organisation:vendormodel', args=[self.pk])
 
     @property
     def display_name(self):

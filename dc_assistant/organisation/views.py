@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Count
-#from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView, ListView
@@ -9,13 +9,14 @@ from .models import Region, Location, Rack, VendorModel, Device, DeviceRole
 from extend.views import ListObjectsView
 from extend import filters
 from .tables import LocationTable, RackTable, VendorModelTable, DeviceRoleTable, DeviceTable
-#from django_tables2 import RequestConfig
+from django_tables2 import RequestConfig
 from django_tables2 import SingleTableView
 from django_tables2 import LazyPaginator
 
 def region_list_view(request):
     regions = Region.objects.all()
     return render(request, 'organisation/regions.html', context={'regions': regions})
+
 
 class RegionAdd(CreateView):
     form_class = RegionAddForm
@@ -39,6 +40,7 @@ class LocationAdd(CreateView):
     model = Location
     success_url = reverse_lazy('organisation:location_list')
     template_name = 'organisation/location_add.html'
+
 
 class LocationView(View):
 
@@ -64,14 +66,30 @@ class RackListView(ListObjectsView):
     success_url = reverse_lazy('organisation:rack_list')
     template_name = 'organisation/racks_tab.html'
 
+
 class RackAdd(CreateView):
     form_class = RackAddForm
     model = Rack
     success_url = reverse_lazy('organisation:rack_list')
     template_name = 'organisation/rack_add.html'
 
+
 class RackView(View):
-    pass
+
+    def get(self, request, pk):
+
+        rack = get_object_or_404(Rack.objects.prefetch_related('location__region'), pk=pk)
+
+        nonracked_devices = Device.objects.filter(
+            rack=rack,
+            position__isnull=True,
+        ).prefetch_related('device_model__vendor')
+
+        return render(request, 'organisation/rack.html', {
+            'rack': rack,
+            'nonracked_devices': nonracked_devices,
+        })
+
 
 class VendorModelListView(ListObjectsView):
     queryset = VendorModel.objects.prefetch_related('vendor').annotate(instance_count=Count('instances'))
@@ -81,14 +99,26 @@ class VendorModelListView(ListObjectsView):
     success_url = reverse_lazy('organisation:model_list')
     template_name = 'organisation/models_tab.html'
 
+
 class VendorModelAdd(CreateView):
     form_class = VendorModelAddForm
     model = VendorModel
     success_url = reverse_lazy('organisation:model_list')
     template_name = 'organisation/model_add.html'
 
-class VendorModelView(View):
-    pass
+
+# class VendorModelView(View):
+#     pass
+
+# class VendorModelView(View):
+#
+#     def get(self, request, pk):
+#         vendormodel = get_object_or_404(VendorModel, pk=pk)
+#
+#         return render(request, 'dcim/devicetype.html', {
+#             'vendormodel': vendormodel,
+#         })
+
 
 class RoleDeviceListView(ListObjectsView):
     queryset = DeviceRole.objects.all()
@@ -96,24 +126,20 @@ class RoleDeviceListView(ListObjectsView):
     success_url = reverse_lazy('organisation:role_list')
     template_name = 'organisation/roles_tab.html'
 
+
 class RoleDeviceAdd(CreateView):
     form_class = RoleModelAddForm
     model = DeviceRole
     success_url = reverse_lazy('organisation:role_list')
     template_name = 'organisation/role_add.html'
 
+
 class DeviceAdd(CreateView):
     form_class = DeviceAddForm
     model = Device
     success_url = reverse_lazy('organisation:device_list')
     template_name = 'organisation/device_add.html'
-    pass
 
-# class DeviceListView(ListObjectsView):
-#     queryset = DeviceRole.objects.all()
-#     table = DeviceRoleTable
-#     success_url = reverse_lazy('organisation:role_list')
-#     template_name = 'organisation/device_tab.html'
 
 class DeviceListView(ListObjectsView):
     queryset = Device.objects.prefetch_related(
@@ -124,5 +150,20 @@ class DeviceListView(ListObjectsView):
     success_url = reverse_lazy('organisation:device_list')
     template_name = 'organisation/device_tab.html'
 
+
 class DeviceView(View):
-    pass
+
+    def get(self, request, pk):
+
+        device = get_object_or_404(Device.objects.prefetch_related(
+            'location__region', 'device_role', 'platform'
+        ), pk=pk)
+
+        #services = device.services.all()
+        #secrets = device.secrets.all()
+
+        return render(request, 'organisation/device.html', {
+            'device': device,
+            #'services': services,
+            #'secrets': secrets,
+        })

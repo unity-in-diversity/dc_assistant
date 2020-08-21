@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+{% load utils %}
+
+{% block content %}
+
+        <!-- ============================================================== -->
+        <!-- Buttons-->
+        <!-- ============================================================== -->
+         <div class="container-fluid">
+            <div class="row ">
+                <div class="col-md-9 col-sm-9">
+                    <h2 class="card-title">{{ rack }}</h2>
+                </div>
+                <div class="col-md-3 col-sm-3 text-right">
+<!--                    <a class="btn btn-warning btn-lg" href="{% url 'organisation:location_add' %}" role="button">Add</a>-->
+                    <a class="btn btn-warning btn-lg" href="#" role="button">Edit</a>
+                    <a class="btn btn-danger btn-lg" href="#" role="button">Delete</a>
+                </div>
+            </div>
+         </div>
+         <hr>
+        <!-- ============================================================== -->
+        <!-- End Buttons-->
+        <!-- ============================================================== -->
+ <!-- Tabs -->
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="{{ rack.get_absolute_url }}" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Rack</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">ChangeLogs</span></a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content tabcontent-border">
+                                <div class="tab-pane active" id="home" role="tabpanel">
+                                    <div class="p-20">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <h4 class="card-title m-b-0">Rack</h4>
+                                                </div>
+                                                <table class="table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Location</td>
+                                                            <td>
+                                                                {% if rack.location.region %}
+                                                                <a href="{{ rack.location.region.get_absolute_url }}"> {{ rack.location.region }} </a>
+                                                                <i class="fas fa-angle-double-right"></i>
+                                                                {% endif %}
+                                                                <a href="{% url 'organisation:location' slug=rack.location.slug %}"> <span class="badge badge-secondary">{{ rack.location }} </span></a>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Devices</td>
+                                                            <td>
+                                                                <a href="{% url 'organisation:device_list' %}?rack_id={{ rack.id }}">{{ rack.devices.count }}</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                        <h4 class="card-title m-b-0">Dimensions</h4>
+                                                </div>
+                                                <table class="table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Type</td>
+                                                            <td>
+                                                                {% if rack.racktype %}
+                                                                    {{ rack.get_racktype_display }}
+                                                                {% else %}
+                                                                    <span class="text-muted">None</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Height</td>
+                                                            <td>{{ rack.u_height }}U ({% if rack.desc_units %}descending{% else %}ascending{% endif %})</td>
+                                                        </tr>
+                                                  </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Comment</h4>
+                                                    </div>
+                                                    <div class="alert alert-secondary" role="alert">
+                                                      {% if rack.comment %}
+                                                            {{ rack.comment }}
+                                                        {% else %}
+                                                            <span class="text-muted">None</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Tags</h4>
+                                                    </div>
+                                                    {% include 'extend/tags_panel.html' with tags=rack.tag.all url='organisation:rack_list' %}
+                                                </div>
+                                            </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane active" id="profile" role="tabpanel1">
+                                    <div class="p-20">
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+{% endblock %}
+
+
+

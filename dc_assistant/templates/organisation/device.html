@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+{% load utils %}
+
+{% block content %}
+
+        <!-- ============================================================== -->
+        <!-- Buttons-->
+        <!-- ============================================================== -->
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+            <div class="row ">
+                <div class="col-md-9 col-sm-9">
+                    <h2 class="card-title">{{ Device }}</h2>
+                </div>
+                <div class="col-md-3 col-sm-3 text-right">
+<!--                    <a class="btn btn-warning btn-lg" href="{% url 'organisation:location_add' %}" role="button">Add</a>-->
+                    <a class="btn btn-warning btn-lg" href="#" role="button">Edit</a>
+                    <a class="btn btn-danger btn-lg" href="#" role="button">Delete</a>
+                </div>
+            </div>
+         </div>
+         <hr>
+        <!-- ============================================================== -->
+        <!-- End Buttons-->
+        <!-- ============================================================== -->
+ <!-- Tabs -->
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="{{ rack.get_absolute_url }}" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Rack</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">ChangeLogs</span></a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content tabcontent-border">
+                                <div class="tab-pane active" id="home" role="tabpanel">
+                                    <div class="p-20">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <h4 class="card-title m-b-0">Device</h4>
+                                                </div>
+                                                <table class="table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Location</td>
+                                                            <td>
+                                                                {% if device.location.region %}
+                                                                    <a href="{{ device.location.region.get_absolute_url }}">{{ device.location.region }}</a>
+                                                                    <i class="fas fa-angle-double-right"></i>
+                                                                {% endif %}
+                                                                <a href="{% url 'organisation:location' slug=device.location.slug %}"> <span class="badge badge-secondary"> {{ device.location }} </span></a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Rack</td>
+                                                            <td>
+                                                                {% if device.rack %}
+                                                                    <a href="{% url 'organisation:rack' pk=device.rack.pk %}">{{ device.rack }}</a>
+                                                                {% else %}
+                                                                    <span class="text-muted">None</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Device Model</td>
+                                                            <td>
+                                                                <span>{{ device.device_model }} ({{ device.device_model.u_height }}U)</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Serial Number</td>
+                                                            <td><span>{{ device.serial }}</span></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <h4 class="card-title m-b-0">Management</h4>
+                                                </div>
+                                                <table class="table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Role</td>
+                                                            <td>
+                                                                <a href="{% url 'organisation:device_list' %}?role={{ device.device_role.slug }}">{{ device.device_role }}</a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Platform</td>
+                                                            <td>
+                                                                {% if device.platform %}
+                                                                   <a href="{{ device.platform.get_absolute_url }}">{{ device.platform }}</a>
+                                                                {% else %}
+                                                                    <span class="text-muted">None</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Position</td>
+                                                            <td>
+                                                                {% if device.rack and device.position %}
+                                                                    <span>U{{ device.position }} / {{ device.get_face_position_display }}</span>
+                                                                {% elif device.rack and device.device_type.u_height %}
+                                                                    <span class="label label-warning">Not racked</span>
+                                                                {% else %}
+                                                                    <span class="text-muted">&mdash;</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>IPv4 address</td>
+                                                            <td> 0.0.0.0 тут будет IP</td>
+                                                        </tr>
+                                                        {% if device.cluster %}
+                                                            <tr>
+                                                                <td>Cluster</td>
+                                                                <td>
+                                                                    отображение инфо о кластере
+                                                                </td>
+                                                            </tr>
+                                                        {% endif %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Comment</h4>
+                                                    </div>
+                                                    <div class="alert alert-secondary" role="alert">
+                                                      {% if rack.comment %}
+                                                            {{ rack.comment }}
+                                                        {% else %}
+                                                            <span class="text-muted">None</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Description</h4>
+                                                    </div>
+                                                    <div class="alert alert-secondary">
+                                                        {{ device.description }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Tags</h4>
+                                                    </div>
+                                                    {% include 'extend/tags_panel.html' with tags=rack.tag.all url='organisation:rack_list' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                <div class="tab-pane active" id="profile" role="tabpanel1">
+                                    <div class="p-20">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+{% endblock %}
+
+
+
