@@ -3,7 +3,7 @@ from django import forms
 from mptt.forms import TreeNodeChoiceField
 from taggit.forms import TagField
 from django.forms import Textarea, TextInput, NumberInput
-from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole, Device
+from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole, Device, Platform
 
 
 class StaticSelectWidget(forms.Select):
@@ -107,6 +107,16 @@ class RoleModelAddForm(forms.ModelForm):
             'name': TextInput(attrs={'class': 'form-control'}),
             'color': forms.Select(attrs={'class': 'select2 form-control custom-select select2-hidden-accessible'}),
             'description': Textarea(attrs={'class': 'form-control', 'rows': 5, }),
+        }
+
+class PlatformAddForm(forms.ModelForm):
+    slug = SlugField(slug_source='name', widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Platform
+        fields = ['name', 'slug',]
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'}),
         }
 
 

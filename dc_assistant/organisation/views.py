@@ -1,17 +1,14 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Count
-from django.http import HttpResponseRedirect
-from django.contrib.contenttypes.models import ContentType
+
 from django.urls import reverse, reverse_lazy
-from django.views.generic import View, CreateView, ListView
-from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm, RoleModelAddForm, DeviceAddForm
-from .models import Region, Location, Rack, VendorModel, Device, DeviceRole
+from django.views.generic import View, CreateView
+from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm, RoleModelAddForm, DeviceAddForm, PlatformAddForm
+from .models import Region, Location, Rack, VendorModel, Device, DeviceRole, Platform
 from extend.views import ListObjectsView
 from extend import filters
-from .tables import LocationTable, RackTable, VendorModelTable, DeviceRoleTable, DeviceTable
-from django_tables2 import RequestConfig
-from django_tables2 import SingleTableView
-from django_tables2 import LazyPaginator
+from .tables import LocationTable, RackTable, VendorModelTable, DeviceRoleTable, DeviceTable, PlatformTable
+
 
 def region_list_view(request):
     regions = Region.objects.all()
@@ -26,12 +23,9 @@ class RegionAdd(CreateView):
 
 
 class LocationListView(ListObjectsView):
-    #permission_required = 'dcim.view_site'
-    #queryset = Location.objects.all()
     queryset = Location.objects.prefetch_related('region')
     filterset = filters.LocationFilterSet
     table = LocationTable
-    success_url = reverse_lazy('organisation:location_list')
     template_name = 'organisation/locations_tab.html'
 
 
@@ -58,12 +52,9 @@ class LocationView(View):
 
 
 class RackListView(ListObjectsView):
-    #queryset = Rack.objects.all()
     queryset = Rack.objects.prefetch_related('location').annotate(device_count=Count('devices'))
-    #table_class = RackTable
     filterset = filters.RackFilterSet
     table = RackTable
-    success_url = reverse_lazy('organisation:rack_list')
     template_name = 'organisation/racks_tab.html'
 
 
@@ -79,12 +70,10 @@ class RackView(View):
     def get(self, request, pk):
 
         rack = get_object_or_404(Rack.objects.prefetch_related('location__region'), pk=pk)
-
         nonracked_devices = Device.objects.filter(
             rack=rack,
             position__isnull=True,
         ).prefetch_related('device_model__vendor')
-
         return render(request, 'organisation/rack.html', {
             'rack': rack,
             'nonracked_devices': nonracked_devices,
@@ -94,9 +83,7 @@ class RackView(View):
 class VendorModelListView(ListObjectsView):
     queryset = VendorModel.objects.prefetch_related('vendor').annotate(instance_count=Count('instances'))
     filterset = filters.DeviceModelFilterSet
-    # table_class = RackTable
     table = VendorModelTable
-    success_url = reverse_lazy('organisation:model_list')
     template_name = 'organisation/models_tab.html'
 
 
@@ -107,23 +94,22 @@ class VendorModelAdd(CreateView):
     template_name = 'organisation/model_add.html'
 
 
-# class VendorModelView(View):
-#     pass
+class PlatformListView(ListObjectsView):
+    queryset = Platform.objects.all()
+    table = PlatformTable
+    template_name = 'organisation/platforms_tab.html'
 
-# class VendorModelView(View):
-#
-#     def get(self, request, pk):
-#         vendormodel = get_object_or_404(VendorModel, pk=pk)
-#
-#         return render(request, 'dcim/devicetype.html', {
-#             'vendormodel': vendormodel,
-#         })
+
+class PlatformAdd(CreateView):
+    form_class = PlatformAddForm
+    model = Platform
+    success_url = reverse_lazy('organisation:platform_list')
+    template_name = 'organisation/platform_add.html'
 
 
 class RoleDeviceListView(ListObjectsView):
     queryset = DeviceRole.objects.all()
     table = DeviceRoleTable
-    success_url = reverse_lazy('organisation:role_list')
     template_name = 'organisation/roles_tab.html'
 
 
@@ -147,7 +133,6 @@ class DeviceListView(ListObjectsView):
     )
     filterset = filters.DeviceFilterSet
     table = DeviceTable
-    success_url = reverse_lazy('organisation:device_list')
     template_name = 'organisation/device_tab.html'
 
 

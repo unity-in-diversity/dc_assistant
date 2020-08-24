@@ -6,8 +6,8 @@ import csv
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        file = str(MEDIA_ROOT + "\\vendors.csv")
-        with open(file, newline='') as f:
+        vendors = str(MEDIA_ROOT + "\\vendors.csv")
+        with open(vendors, newline='') as f:
             reader = csv.reader(f, delimiter=';')
             for row in reader:
                 if row[0] != 'name':

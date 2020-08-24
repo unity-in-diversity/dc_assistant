@@ -1,7 +1,7 @@
 import django_tables2 as tables
 #from extend.tables import BaseTable
 from django_tables2.utils import Accessor
-from .models import Location, Rack, VendorModel, DeviceRole, Device
+from .models import Location, Rack, VendorModel, DeviceRole, Device, Platform
 
 SITE_REGION_LINK = """
 {% if record.region %}
@@ -17,6 +17,14 @@ RACK_DEVICE_COUNT = """
 
 DEVICEMODEL_INSTANCES_TEMPLATE = """
 <a href="{% url 'organisation:device_list' %}?vendor_id={{ record.vendor_id }}&device_model_id={{ record.pk }}">{{ record.instance_count }}</a>
+"""
+
+PLATFORM_DEVICE_COUNT = """
+<a href="{% url 'organisation:device_list' %}?platform={{ record.slug }}">{{ value }}</a>
+"""
+
+PLATFORM_ACTIONS = """
+<a href="{% url 'organisation:platform_edit' slug=record.slug %}?return_url={{ request.path }}" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></a>
 """
 
 DEVICEROLE_DEVICE_COUNT = """
@@ -108,7 +116,27 @@ class DeviceTable(tables.Table):
     # )
 
 
-    class Meta():
+    class Meta:
         model = Device
-        fields = ('name', 'device_role', 'device_model', 'location', 'rack',)
+        fields = ('name', 'platform', 'device_role', 'device_model', 'location', 'rack',)
+        attrs = {'class': 'table table-hover table-headings', }
+
+class PlatformTable(tables.Table):
+
+    device_count = tables.TemplateColumn(
+        template_code=PLATFORM_DEVICE_COUNT,
+        accessor=Accessor('devices.count'),
+        orderable=False,
+        verbose_name='Devices'
+    )
+
+    # actions = tables.TemplateColumn(
+    #     template_code=PLATFORM_ACTIONS,
+    #     attrs={'td': {'class': 'text-right noprint'}},
+    #     verbose_name=''
+    # )
+
+    class Meta:
+        model = Platform
+        fields = ('name', 'slug', 'device_count')
         attrs = {'class': 'table table-hover table-headings', }
