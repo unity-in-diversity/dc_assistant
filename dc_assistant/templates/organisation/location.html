@@ -14,7 +14,9 @@
                 </div>
                 <div class="col-md-3 col-sm-3">
 <!--                    <a class="btn btn-warning btn-lg" href="{% url 'organisation:location_add' %}" role="button">Add</a>-->
-                    <a class="btn btn-warning btn-lg" href="#" role="button">Edit</a>
+                    {% if perms.dcim.change_location %}
+                        {% edit_button location %}
+                    {% endif %}
                     <a class="btn btn-danger btn-lg" href="#" role="button">Delete</a>
                 </div>
             </div>

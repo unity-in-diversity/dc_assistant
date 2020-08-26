@@ -22,7 +22,6 @@ class ListObjectsView(View):
     filterset = None
     table = None
     template_name = None
-    #template_name = 'utilities/obj_list.html'
 
     def get(self, request):
 

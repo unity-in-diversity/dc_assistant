@@ -1,19 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
 {% load django_tables2 %}
-<!--{% load render_table from django_tables2 %}-->
 
 {% block content %}
-
-<h2 class="card-title"> Racks </h2>
         <!-- ============================================================== -->
         <!-- Buttons-->
         <!-- ============================================================== -->
-         <div class="container-fluid">
+        <div class="container-fluid">
             <div class="row justify-content-end">
-                <div class="col-md-auto col-sm-auto">
+                <div class="col-md-9 col-sm-9">
+                    <h2 class="card-title">Racks</h2>
+                </div>
+                <div class="col-md-3 col-sm-3 text-right">
                     <a class="btn btn-primary btn-lg" href="{% url 'organisation:rack_add' %}" role="button">Add</a>
-                    <a class="btn btn-secondary btn-lg" href="#" role="button">Import</a>
                 </div>
             </div>
          </div>

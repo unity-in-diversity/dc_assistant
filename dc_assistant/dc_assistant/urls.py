@@ -17,11 +17,13 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from . import views
+from .views import MainView
+from secret.views import UserLoginView
 
 urlpatterns = [
+    path('', MainView.as_view(), name='home'),
     path('admin/', admin.site.urls),
-    path('', views.main_view),
+    path('login/', UserLoginView.as_view(), name='login'),
     path('organisation/', include('organisation.urls')),
     path('extend/', include('extend.urls')),
     path('secret/', include('secret.urls')),

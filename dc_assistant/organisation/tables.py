@@ -1,7 +1,17 @@
 import django_tables2 as tables
 #from extend.tables import BaseTable
 from django_tables2.utils import Accessor
-from .models import Location, Rack, VendorModel, DeviceRole, Device, Platform
+from .models import Region, Location, Rack, VendorModel, DeviceRole, Device, Platform
+
+# REGION_ACTIONS = """
+# {% if perms.dcim.change_region %}
+#     <a href="{% url 'dcim:region_edit' pk=record.pk %}?return_url={{ request.path }}" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></a>
+# {% endif %}
+# """
+
+REGION_ACTIONS = """
+    <a href="{% url 'organisation:region_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
+"""
 
 SITE_REGION_LINK = """
 {% if record.region %}
@@ -47,6 +57,18 @@ COLOR_LABEL = """
 <label class="label" style="color: {{ record.color|fgcolor }}; background-color: #{{ record.color }}">{{ record }}</label>
 """
 
+class RegionTable(tables.Table):
+    actions = tables.TemplateColumn(
+        template_code=REGION_ACTIONS,
+        attrs={'td': {'class': 'text-right noprint'}},
+        verbose_name=''
+    )
+
+    class Meta():
+        model = Region
+        fields = ('name', 'parent', 'slug', 'actions')
+        attrs = {'class': 'table table-hover table-headings'}
+
 class LocationTable(tables.Table):
     name = tables.LinkColumn(order_by=('name',))
     region = tables.TemplateColumn(template_code=SITE_REGION_LINK)
@@ -54,8 +76,7 @@ class LocationTable(tables.Table):
     class Meta:
         model = Location
         fields = ('name', 'region', 'description')
-        attrs = {'class': 'table'}
-        #template_name = 'django_tables2/bootstrap-responsive.html'
+        attrs = {'class': 'table table-hover table-headings'}
 
 class RackTable(tables.Table):
     name = tables.LinkColumn(order_by=('name',))

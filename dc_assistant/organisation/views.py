@@ -1,28 +1,45 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Count
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from django.urls import reverse, reverse_lazy
-from django.views.generic import View, CreateView
+from django.views.generic import View, CreateView, UpdateView
 from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm, RoleModelAddForm, DeviceAddForm, PlatformAddForm
 from .models import Region, Location, Rack, VendorModel, Device, DeviceRole, Platform
 from extend.views import ListObjectsView
 from extend import filters
-from .tables import LocationTable, RackTable, VendorModelTable, DeviceRoleTable, DeviceTable, PlatformTable
+from .tables import RegionTable, LocationTable, RackTable, VendorModelTable, DeviceRoleTable, DeviceTable, PlatformTable
 
 
-def region_list_view(request):
-    regions = Region.objects.all()
-    return render(request, 'organisation/regions.html', context={'regions': regions})
+# def region_list_view(request):
+#     regions = Region.objects.all()
+#     return render(request, 'organisation/regions.html', context={'regions': regions})
+
+class RegionListView(PermissionRequiredMixin, ListObjectsView):
+    permission_required = 'organisation.view_region'
+    queryset = Region.objects.all()
+    table = RegionTable
+    template_name = 'organisation/region_tab.html'
 
 
 class RegionAdd(CreateView):
+    permission_required = 'organisation.edit_region'
     form_class = RegionAddForm
     model = Region
     success_url = reverse_lazy('organisation:region_list')
     template_name = 'organisation/region_add.html'
 
 
-class LocationListView(ListObjectsView):
+class RegionEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_region'
+    model = Region
+    form_class = RegionAddForm
+    success_url = reverse_lazy('organisation:region_list')
+    template_name = 'organisation/region_add.html'
+
+
+class LocationListView(PermissionRequiredMixin, ListObjectsView):
+    permission_required = 'organisation.view_location'
     queryset = Location.objects.prefetch_related('region')
     filterset = filters.LocationFilterSet
     table = LocationTable
@@ -36,7 +53,16 @@ class LocationAdd(CreateView):
     template_name = 'organisation/location_add.html'
 
 
-class LocationView(View):
+class LocationEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_location'
+    model = Location
+    form_class = LocationAddForm
+    success_url = reverse_lazy('organisation:location_list')
+    template_name = 'organisation/location_add.html'
+
+
+class LocationView(PermissionRequiredMixin, View):
+    permission_required = 'organisation.view_location'
 
     def get(self, request, slug):
         location = get_object_or_404(Location.objects.prefetch_related('region'), slug=slug)

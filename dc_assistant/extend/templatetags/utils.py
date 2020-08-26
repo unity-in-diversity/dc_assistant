@@ -1,4 +1,5 @@
 from django import template
+from django.urls import reverse
 import re
 
 register = template.Library()
@@ -34,3 +35,29 @@ def tag(tag, url_name=None):
         'url_name': url_name,
     }
 
+def _get_viewname(instance, action):
+    """
+    Return the appropriate viewname for adding, editing, or deleting an instance.
+    """
+    # Validate action
+    assert action in ('add', 'edit', 'delete')
+    viewname = "{}:{}_{}".format(
+        instance._meta.app_label, instance._meta.model_name, action
+    )
+    return viewname
+
+@register.inclusion_tag('extend/edit.html')
+def edit_button(instance, use_pk=False):
+    viewname = _get_viewname(instance, 'edit')
+
+    # Assign kwargs
+    if hasattr(instance, 'slug') and not use_pk:
+        kwargs = {'slug': instance.slug}
+    else:
+        kwargs = {'pk': instance.pk}
+
+    url = reverse(viewname, kwargs=kwargs)
+
+    return {
+        'url': url,
+    }

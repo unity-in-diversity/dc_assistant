@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'mptt',
-#    'taggit',
+    #'taggit',
     'django_tables2',
     'django_filters',
     'extend',
@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'dc_assistant.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
+#TODO move to file configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -124,6 +124,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#TODO move to file configuration
+BASE_PATH = ''
+
+# Authentication URLs
+LOGIN_URL = '/{}login/'.format(BASE_PATH)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -150,6 +155,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-PAGINATE_COUNT = getattr(configuration, 'PAGINATE_COUNT', 6)
+PAGINATE_COUNT = getattr(configuration, 'PAGINATE_COUNT', 5)
 
 TAGGIT_CASE_INSENSITIVE = True
