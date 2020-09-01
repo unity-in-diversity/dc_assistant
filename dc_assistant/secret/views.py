@@ -1,18 +1,21 @@
 from django.views.generic import View
-from django.contrib.auth.views import LoginView
-from .forms import UserAuthenticationForm
+from django.contrib.auth.views import LoginView, PasswordChangeView
+from .forms import UserAuthenticationForm, UserChangePasswordForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.contrib.auth import login as auth_login
-from django.shortcuts import render, reverse
+from django.contrib.auth import login as auth_login, update_session_auth_hash
+from django.shortcuts import render, reverse, redirect
 from django.utils.http import is_safe_url
 from django.contrib import messages
+from django.urls import reverse_lazy
 
 
 class UserLoginView(LoginView):
     template_name = 'secret/login.html'
 
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
 
     def get(self, request):
         form = UserAuthenticationForm(request)
@@ -37,6 +40,18 @@ class UserLoginView(LoginView):
             'form': form,
         })
 
+
+class UserChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'secret/change_password.html'
+    form_class = UserChangePasswordForm
+    success_url = reverse_lazy('change_password_done')
+
+
+class UserProfileView(LoginRequiredMixin, View):
+    template_name = 'secret/profile.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
 
 class SecretListView(View):
     pass

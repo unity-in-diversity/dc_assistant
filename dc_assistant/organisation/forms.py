@@ -125,7 +125,7 @@ class DeviceAddForm(forms.ModelForm):
                 queryset=Location.objects.all(),
                 required=False, widget=forms.Select(attrs={'class': 'select2 form-control custom-select'})
             )
-    tag = TagField(help_text="Вводить через запятую", widget=TextInput(attrs={'data-role': 'tagsinput'}))
+    tag = TagField(required=False, help_text="Вводить через запятую", widget=TextInput(attrs={'data-role': 'tagsinput'}))
 
     #tag = TagField()
 

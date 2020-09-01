@@ -129,6 +129,7 @@ BASE_PATH = ''
 
 # Authentication URLs
 LOGIN_URL = '/{}login/'.format(BASE_PATH)
+LOGOUT_REDIRECT_URL = 'home'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
