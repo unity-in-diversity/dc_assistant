@@ -16,7 +16,7 @@ class SlugWidget(forms.TextInput):
     """
     Тип поля основанный на TextInput с доп. шаблоном для автоматического формирования значения поля с помощью JS скрипта.
     """
-    template_name = 'sluginput.html'
+    template_name = 'organisation/sluginput.html'
 
 class SlugField(forms.SlugField):
     """
@@ -25,7 +25,6 @@ class SlugField(forms.SlugField):
     """
     def __init__(self, slug_source='name', *args, **kwargs):
         label = kwargs.pop('label', "Slug")
-        #help_text = kwargs.pop('help_text', "URL-friendly")
         widget = kwargs.pop('widget', SlugWidget)
         super().__init__(label=label, widget=widget, *args, **kwargs)
         self.widget.attrs['slug-source'] = slug_source
@@ -33,7 +32,6 @@ class SlugField(forms.SlugField):
 class RegionAddForm(forms.ModelForm):
     parent = TreeNodeChoiceField(label='Родитель', required=False, queryset=Region.objects.all(), level_indicator = u'-', widget=forms.Select(attrs={'class': 'select2 form-control custom-select'}))
     name = forms.CharField(label='Название региона', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    #slug = forms.CharField(label='Псевдоним', widget=forms.TextInput(attrs={'class': 'form-control'}))
     slug = SlugField(slug_source='name', widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
@@ -87,7 +85,6 @@ class RackAddForm(forms.ModelForm):
 class VendorModelAddForm(forms.ModelForm):
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), empty_label="------",
                                     widget=forms.Select(attrs={'class': 'select2 form-control custom-select'}))
-    #slug = SlugField(slug_source='model')
     slug = SlugField(slug_source='model', widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = VendorModel
@@ -126,8 +123,6 @@ class DeviceAddForm(forms.ModelForm):
                 required=False, widget=forms.Select(attrs={'class': 'select2 form-control custom-select'})
             )
     tag = TagField(required=False, help_text="Вводить через запятую", widget=TextInput(attrs={'data-role': 'tagsinput'}))
-
-    #tag = TagField()
 
     class Meta:
         model = Device

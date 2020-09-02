@@ -17,7 +17,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from .views import MainView
+from .views import MainView, APIRootView
 from secret.views import UserLoginView, UserProfileView, UserChangePasswordView
 from django.contrib.auth.views import LogoutView, PasswordChangeDoneView
 
@@ -29,7 +29,8 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='profile'),
     path('change-password/', UserChangePasswordView.as_view(), name='change_password'),
     path('change-password/done/', PasswordChangeDoneView.as_view(template_name='secret/change_password_done.html'), name='change_password_done'),
-
+    path('api/', APIRootView.as_view(), name='api-root'),
+    path('api/secrets/', include('secret.api.urls')),
     path('organisation/', include('organisation.urls')),
     path('extend/', include('extend.urls')),
     path('secret/', include('secret.urls')),

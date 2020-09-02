@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% load django_tables2 %}
-<!--{% load render_table from django_tables2 %}-->
 
 {% block content %}
         <!-- ============================================================== -->
@@ -28,7 +27,6 @@
                        {% render_table table 'organisation/tmpl_table.html' %}
                    </div>
                 </div>
-
             </div>
         </div>
 {% endblock %}

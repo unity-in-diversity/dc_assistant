@@ -11,10 +11,6 @@ from extend import filters
 from .tables import RegionTable, LocationTable, RackTable, VendorModelTable, DeviceRoleTable, DeviceTable, PlatformTable
 
 
-# def region_list_view(request):
-#     regions = Region.objects.all()
-#     return render(request, 'organisation/regions.html', context={'regions': regions})
-
 class RegionListView(PermissionRequiredMixin, ListObjectsView):
     permission_required = 'organisation.view_region'
     queryset = Region.objects.all()

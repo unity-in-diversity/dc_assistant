@@ -1,11 +1,10 @@
 from django.views.generic import View
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from .forms import UserAuthenticationForm, UserChangePasswordForm
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.contrib.auth import login as auth_login, update_session_auth_hash
-from django.shortcuts import render, reverse, redirect
+from django.contrib.auth import login as auth_login
+from django.shortcuts import render, reverse
 from django.utils.http import is_safe_url
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -13,9 +12,6 @@ from django.urls import reverse_lazy
 
 class UserLoginView(LoginView):
     template_name = 'secret/login.html'
-
-    # def dispatch(self, *args, **kwargs):
-    #     return super().dispatch(*args, **kwargs)
 
     def get(self, request):
         form = UserAuthenticationForm(request)
@@ -52,6 +48,10 @@ class UserProfileView(LoginRequiredMixin, View):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class UserKeyView(LoginRequiredMixin, View):
+    pass
 
 class SecretListView(View):
     pass
