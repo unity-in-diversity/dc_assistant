@@ -12,3 +12,4 @@ Pillow==7.0.0
 pytz==2019.3
 six==1.15.0
 sqlparse==0.3.0
+pycryptodome==3.9.4

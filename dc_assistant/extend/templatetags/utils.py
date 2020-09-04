@@ -61,3 +61,10 @@ def edit_button(instance, use_pk=False):
     return {
         'url': url,
     }
+
+@register.filter()
+def decryptable_by(secret, user):
+    """
+    Determine whether a given User is permitted to decrypt a Secret.
+    """
+    return secret.decryptable_by(user)

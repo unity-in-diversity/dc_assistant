@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from secret.views import secret_add
 from dc_assistant import views as homeviews
 
 app_name = 'organisation'
@@ -31,5 +32,6 @@ urlpatterns = [
     path('devices/', views.DeviceListView.as_view(), name='device_list'),
     path('devices/add', views.DeviceAdd.as_view(), name='device_add'),
     path('devices/<int:pk>/', views.DeviceView.as_view(), name='device'),
+    path('devices/<int:pk>/add-secret/', secret_add, name='device_addsecret'),
 
 ]

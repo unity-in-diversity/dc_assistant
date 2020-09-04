@@ -21,7 +21,6 @@
         <!-- ============================================================== -->
         <!-- End Buttons-->
         <!-- ============================================================== -->
- <!-- Tabs -->
                         <div class="card">
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs" role="tablist">
@@ -138,23 +137,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="card-body">
-                                                    <div>
-                                                        <h4 class="card-title m-b-0">Description</h4>
-                                                    </div>
-                                                    <div class="alert alert-secondary">
-                                                        {{ device.description }}
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
                                             <div class="col-md-6">
                                                 <div class="card-body">
                                                     <div>
@@ -164,6 +146,58 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Description</h4>
+                                                    </div>
+                                                    <div class="alert alert-secondary">
+                                                        {{ device.description }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        {% if request.user.is_authenticated %}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h4 class="card-title m-b-0">Secrets</h4>
+                                                    </div>
+                                                    {% if secrets %}
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover panel-body">
+                                                            {% for secret in secrets %}
+                                                                {% include 'secrets/inc/secret_tr.html' %}
+                                                            {% endfor %}
+                                                        </table>
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="card-body">
+                                                        None found
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if perms.secrets.add_secret %}
+                                                        <form id="secret_form">
+                                                            {% csrf_token %}
+                                                        </form>
+                                                        <div class="panel-footer text-right noprint">
+                                                            <a href="{% url 'organisation:device_addsecret' pk=device.pk %}" class="btn btn-xs btn-primary">
+                                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                                                Add secret
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
                                     </div>
 
                                 <div class="tab-pane active" id="profile" role="tabpanel1">
