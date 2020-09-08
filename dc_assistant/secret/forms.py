@@ -58,6 +58,7 @@ class UserChangePasswordForm(PasswordChangeForm):
         self.fields['new_password2'].widget.attrs['class'] = 'form-control'
         self.fields['new_password2'].widget.attrs['placeholder'] = 'New password again to confirm'
 
+
 class UserKeyForm(forms.ModelForm):
 
     class Meta:
@@ -82,6 +83,22 @@ class UserKeyForm(forms.ModelForm):
         validate_rsa_key(key, is_secret=False)
 
         return key
+
+
+class ActivateUserKeyForm(forms.Form):
+    _selected_action = forms.ModelMultipleChoiceField(
+        queryset=UserKey.objects.all(),
+        label='User Keys'
+    )
+    secret_key = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'vLargeTextField',
+            }
+        ),
+        label='Your private key'
+    )
+
 
 class SecretAddForm(forms.BaseForm):
     plaintext = forms.CharField(
@@ -125,18 +142,3 @@ class SecretAddForm(forms.BaseForm):
             raise forms.ValidationError({
                 'plaintext2': "Secrets(passwords) do not match. Please check input try again."
             })
-
-
-class ActivateUserKeyForm(forms.Form):
-    _selected_action = forms.ModelMultipleChoiceField(
-        queryset=UserKey.objects.all(),
-        label='User Keys'
-    )
-    secret_key = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                'class': 'vLargeTextField',
-            }
-        ),
-        label='Your private key'
-    )
