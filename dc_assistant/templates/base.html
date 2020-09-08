@@ -111,6 +111,10 @@
                             <div class="dropdown-menu dropdown-menu-right user-dd animated">
                                 <a class="dropdown-item" href="{% url 'profile' %}"><i class="ti-user m-r-5 m-l-5"></i> Profile</a>
                                 <div class="dropdown-divider"></div>
+                                {% if request.user.is_staff %}
+                                <a class="dropdown-item" href="{% url 'admin:index' %}"><i class="ti-settings m-r-5 m-l-5"></i> Admin</a>
+                                <div class="dropdown-divider"></div>
+                                {% endif %}
                                 <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
                             </div>
                         </li>
@@ -212,10 +216,9 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 
-{{ form.media }}
 
+    {{ form.media }}
 
     <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
     <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
@@ -257,7 +260,19 @@
     <script src="{% static 'assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
     <script src="{% static 'assets/libs/quill/dist/quill.min.js' %}"></script>
     <script src="{% static 'assets/libs/tag/bootstrap-tagsinput.js' %}"></script>
-    {% block pagescripts %}{% endblock %}
+    <script src="{% static 'dist/js/clipboard.js/clipboard-2.0.4.min.js' %}"></script>
+    <script src="{% static 'dist/js/flatpickr-4.6.3/flatpickr.min.js' %}"></script>
+
+    <script type="text/javascript">
+        var dc_assistant_api_path = "/{{ settings.BASE_PATH }}api/";
+        var loading = $(".loading");
+        $(document).ajaxStart(function() {
+            loading.show();
+        }).ajaxStop(function() {
+            loading.hide();
+        });
+    </script>
+{% block pagescript %}{% endblock %}
 
 </body>
 

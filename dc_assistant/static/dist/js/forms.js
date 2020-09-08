@@ -317,7 +317,7 @@ $(document).ready(function() {
         width: "off",
         ajax: {
             delay: 250,
-            url: netbox_api_path + "extras/tags/",
+            url: dc_assistant_api_path + "extras/tags/",
 
             data: function(params) {
                 // Paging. Note that `params.page` indexes at 1

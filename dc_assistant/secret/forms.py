@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import Textarea
 from taggit.forms import TagField
 from django.forms import TextInput
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -57,7 +58,7 @@ class UserChangePasswordForm(PasswordChangeForm):
         self.fields['new_password2'].widget.attrs['class'] = 'form-control'
         self.fields['new_password2'].widget.attrs['placeholder'] = 'New password again to confirm'
 
-class UserKeyAddForm(forms.ModelForm):
+class UserKeyForm(forms.ModelForm):
 
     class Meta:
         model = UserKey
@@ -68,6 +69,10 @@ class UserKeyAddForm(forms.ModelForm):
         }
         labels = {
             'public_key': ''
+        }
+        widgets = {
+            'public_key': Textarea(attrs={'class': 'form-control', 'rows': 12, })
+
         }
 
     def clean_public_key(self):
@@ -120,3 +125,18 @@ class SecretAddForm(forms.BaseForm):
             raise forms.ValidationError({
                 'plaintext2': "Secrets(passwords) do not match. Please check input try again."
             })
+
+
+class ActivateUserKeyForm(forms.Form):
+    _selected_action = forms.ModelMultipleChoiceField(
+        queryset=UserKey.objects.all(),
+        label='User Keys'
+    )
+    secret_key = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'vLargeTextField',
+            }
+        ),
+        label='Your private key'
+    )

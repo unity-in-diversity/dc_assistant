@@ -240,6 +240,7 @@ class SessionKey(models.Model):
     created = models.DateTimeField(
         auto_now_add=True
     )
+
     key = None
 
     class Meta:

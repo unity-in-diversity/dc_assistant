@@ -166,3 +166,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 PAGINATE_COUNT = getattr(configuration, 'PAGINATE_COUNT', 5)
 
 TAGGIT_CASE_INSENSITIVE = True
+
+VERSION = '2.7.8-dev'

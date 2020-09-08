@@ -20,10 +20,11 @@ from django.conf.urls import include
 from .views import MainView, APIRootView
 from secret.views import UserLoginView, UserProfileView, UserChangePasswordView
 from django.contrib.auth.views import LogoutView, PasswordChangeDoneView
+from dc_assistant.admin import admin_site
 
 urlpatterns = [
     path('', MainView.as_view(), name='home'),
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', UserProfileView.as_view(), name='profile'),

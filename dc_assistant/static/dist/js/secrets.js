@@ -39,7 +39,7 @@ $(document).ready(function() {
     // Retrieve a secret via the API
     function unlock_secret(secret_id) {
         $.ajax({
-            url: netbox_api_path + 'secrets/secrets/' + secret_id + '/',
+            url: dc_assistant_api_path + 'secrets/secrets/' + secret_id + '/',
             type: 'GET',
             dataType: 'json',
             success: function (response, status) {
@@ -78,7 +78,7 @@ $(document).ready(function() {
     function get_session_key(private_key) {
         var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
         $.ajax({
-            url: netbox_api_path + 'secrets/get-session-key/',
+            url: dc_assistant_api_path + 'secrets/get-session-key/',
             type: 'POST',
             data: {
                 private_key: private_key
@@ -106,7 +106,7 @@ $(document).ready(function() {
     $('#generate_keypair').click(function() {
         $('#new_keypair_modal').modal('show');
         $.ajax({
-            url: netbox_api_path + 'secrets/generate-rsa-key-pair/',
+            url: dc_assistant_api_path + 'secrets/generate-rsa-key-pair/',
             type: 'GET',
             dataType: 'json',
             success: function (response, status) {

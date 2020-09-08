@@ -13,7 +13,7 @@ from django.urls import reverse_lazy
 from organisation.models import Device
 from .forms import UserAuthenticationForm, UserChangePasswordForm
 from .models import SessionKey, Secret, UserKey
-from .forms import SecretAddForm, UserKeyAddForm
+from .forms import SecretAddForm, UserKeyForm
 from .decorators import userkey_required
 
 
@@ -142,7 +142,21 @@ class UserKeyAddEditView(LoginRequiredMixin, View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        form = UserKeyAddForm(instance=self.userkey)
+        form = UserKeyForm(instance=self.userkey)
+
+        return render(request, self.template_name, {
+            'userkey': self.userkey,
+            'form': form,
+        })
+
+    def post(self, request):
+        form = UserKeyForm(data=request.POST, instance=self.userkey)
+        if form.is_valid():
+            uk = form.save(commit=False)
+            uk.user = request.user
+            uk.save()
+            messages.success(request, "Your user key is saved.")
+            return redirect('secret:userkey')
 
         return render(request, self.template_name, {
             'userkey': self.userkey,
