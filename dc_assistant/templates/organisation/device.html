@@ -173,7 +173,28 @@
                                                     <div class="table-responsive">
                                                         <table class="table table-hover panel-body">
                                                             {% for secret in secrets %}
-                                                                {% include 'secrets/inc/secret_tr.html' %}
+                                                                <tr>
+                                                                    <td><a href="{% url 'secret:secret' pk=secret.pk %}">{{ secret.role }}</a></td>
+                                                                    <td>{{ secret.name }}</td>
+                                                                    <td id="secret_{{ secret.pk }}">********</td>
+                                                                    <td class="text-right noprint">
+                                                                        {% if secret|decryptable_by:request.user %}
+                                                                            <button class="btn btn-xs btn-success unlock-secret" secret-id="{{ secret.pk }}">
+                                                                                <i class="fa fa-lock"></i> Unlock
+                                                                            </button>
+                                                                            <button class="btn btn-xs btn-default copy-secret collapse" secret-id="{{ secret.pk }}" data-clipboard-target="#secret_{{ secret.pk }}">
+                                                                                <i class="fa fa-copy"></i> Copy
+                                                                            </button>
+                                                                            <button class="btn btn-xs btn-danger lock-secret collapse" secret-id="{{ secret.pk }}">
+                                                                                <i class="fa fa-unlock-alt"></i> Lock
+                                                                            </button>
+                                                                        {% else %}
+                                                                            <button class="btn btn-xs btn-default" disabled="disabled" title="Permission denied">
+                                                                                <i class="fa fa-lock"></i> Unlock
+                                                                            </button>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
                                                             {% endfor %}
                                                         </table>
                                                     </div>
@@ -182,7 +203,7 @@
                                                         None found
                                                     </div>
                                                     {% endif %}
-                                                    {% if perms.secrets.add_secret %}
+                                                    {% if perms.secret.add_secret %}
                                                         <form id="secret_form">
                                                             {% csrf_token %}
                                                         </form>
@@ -209,7 +230,28 @@
                             </div>
                         </div>
 
+<div class="modal fade none-border" id="privkey_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h4 class="modal-title" id="privkey_modal_title"><span class="fas fa-lock" aria-hidden="true"></span><strong> Enter your private RSA key</strong></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <p>There is no active session key. To request it, paste your private key. Your session key will be saved for future requests at this session.</p>
+                <div class="form-group">
+                    <textarea class="form-control" id="user_privkey" style="height: 300px;"></textarea>
+                </div>
+                <div class="form-group text-right noprint">
+                    <button id="request_session_key" class="btn btn-primary" data-dismiss="modal">Request session key</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 

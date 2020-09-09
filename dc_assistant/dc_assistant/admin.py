@@ -13,6 +13,5 @@ class DCAdminSite(AdminSite):
 
 admin_site = DCAdminSite(name='admin')
 
-# Register external models
 admin_site.register(Group, GroupAdmin)
 admin_site.register(User, UserAdmin)

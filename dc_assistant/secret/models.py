@@ -18,6 +18,13 @@ from organisation.models import Device
 from django.contrib.auth.hashers import PBKDF2PasswordHasher
 
 
+__all__ = (
+    'Secret',
+    'SecretRole',
+    'SessionKey',
+    'UserKey',
+)
+
 class InvalidKey(Exception):
     """
     Raised when a provided key is invalid.
@@ -208,7 +215,7 @@ class SecretRole(LoggingModel):
         return self.name
 
     def get_absolute_url(self):
-        return "{}?role={}".format(reverse('secrets:secret_list'), self.slug)
+        return "{}?role={}".format(reverse('secret:secret_list'), self.slug)
 
     def has_member(self, user):
         """
@@ -278,6 +285,7 @@ class SessionKey(models.Model):
         return master_key
 
     def get_session_key(self, master_key):
+        print(master_key)
 
         # Recover session key using the master key
         session_key = strxor.strxor(master_key, bytes(self.cipher))
@@ -335,16 +343,19 @@ class Secret(LoggingModel):
         super().__init__(*args, **kwargs)
 
     def __str__(self):
-        try:
-            device = self.device
-        except Device.DoesNotExist:
-            device = None
-        if self.role and device and self.name:
-            return '{} for {} ({})'.format(self.role, self.device, self.name)
-        # Return role and device if no name is set
-        if self.role and device:
-            return '{} for {}'.format(self.role, self.device)
-        return 'Secret'
+        #return self.name
+        return '{} for {}'.format(self.name, self.device)
+        # try:
+        #     device = self.device
+        # except Device.DoesNotExist:
+        #     device = None
+        # print('Secret __str__', self.role)
+        # if self.role and device and self.name:
+        #     return '{} for {} ({})'.format(self.role, self.device, self.name)
+        # # Return role and device if no name is set
+        # if self.role and device:
+        #     return '{} for {}'.format(self.role, self.device)
+        # return 'Secret'
 
     def get_absolute_url(self):
         return reverse('secret:secret', args=[self.pk])
@@ -430,7 +441,7 @@ class Secret(LoggingModel):
         Validate that a given plaintext matches the stored hash.
         """
         if not self.hash:
-            raise Exception("Hash has not been generated for this secret.")
+            raise Exception("Hash is not generated for this secret.")
         return check_password(plaintext, self.hash, preferred=SecretValidationHasher())
 
     def decryptable_by(self, user):

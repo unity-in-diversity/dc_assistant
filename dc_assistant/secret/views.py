@@ -1,5 +1,6 @@
 import base64
 
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import View
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,11 +12,13 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 
 from organisation.models import Device
+from extend.views import ListObjectsView
 from .forms import UserAuthenticationForm, UserChangePasswordForm
 from .models import SessionKey, Secret, UserKey
 from .forms import SecretAddForm, UserKeyForm
 from .decorators import userkey_required
-
+from extend import filters
+from .tables import SecretTable
 
 class UserLoginView(LoginView):
     template_name = 'secret/login.html'
@@ -66,14 +69,14 @@ def get_session_key(request):
         return base64.b64decode(session_key)
     return session_key
 
-
 @userkey_required()
 def secret_add(request, pk):
 
     # Retrieve device
     device = get_object_or_404(Device, pk=pk)
-
+    print('def secret_add begin device', device)
     secret = Secret(device=device)
+    print('def secret_add begin secret', secret)
     session_key = get_session_key(request)
 
     if request.method == 'POST':
@@ -103,10 +106,10 @@ def secret_add(request, pk):
                     form.save_m2m()
 
                     messages.success(request, "Added new secret: {}.".format(secret))
-                    if '_addanother' in request.POST:
-                        return redirect('dcim:device_addsecret', pk=device.pk)
-                    else:
-                        return redirect('secrets:secret', pk=secret.pk)
+                    # if '_addanother' in request.POST:
+                    #     return redirect('organisation:device_addsecret', pk=device.pk)
+                    # else:
+                    return redirect('secret:secret', pk=secret.pk)
 
     else:
         form = SecretAddForm(instance=secret)
@@ -163,8 +166,20 @@ class UserKeyAddEditView(LoginRequiredMixin, View):
             'form': form,
         })
 
-class SecretListView(View):
-    pass
+class SecretListView(PermissionRequiredMixin, ListObjectsView):
+    permission_required = 'secret.view_secret'
+    queryset = Secret.objects.prefetch_related('role', 'device')
+    filterset = filters.SecretFilterSet
+    table = SecretTable
+    template_name = 'secret/secret_tab.html'
 
-class SecretView(View):
-    pass
+class SecretView(PermissionRequiredMixin, View):
+    permission_required = 'secret.view_secret'
+
+    def get(self, request, pk):
+
+        secret = get_object_or_404(Secret, pk=pk)
+
+        return render(request, 'secrets/secret.html', {
+            'secret': secret,
+        })

@@ -10,7 +10,9 @@ from extend.forms import ColorField
 __all__ = (
     'Tag',
     'TaggedItem',
-    'ImgAttach')
+    'ImgAttach',
+    'LoggingModel',
+)
 
 class Tag(TagBase):
 

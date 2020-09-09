@@ -1,9 +1,11 @@
 from django.contrib import admin, messages
 from django.shortcuts import redirect, render
-from .models import UserKey
+from .models import UserKey, Secret, SecretRole
 from .forms import ActivateUserKeyForm
 from dc_assistant.admin import admin_site
 
+admin_site.register(SecretRole)
+admin_site.register(Secret)
 
 @admin.register(UserKey, site=admin_site)
 class UserKeyAdmin(admin.ModelAdmin):

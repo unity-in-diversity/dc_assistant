@@ -1,8 +1,25 @@
 import django_filters
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from organisation.models import Region, Location, Vendor, VendorModel, Rack, DeviceRole, Platform
+from organisation.models import Region, Location, Vendor, VendorModel, Rack, DeviceRole, Platform, Device
 from extend.models import Tag
+from secret.models import Secret, SecretRole
+
+__all__ = (
+    'LocationFilterSet',
+    'RackFilterSet',
+    'DeviceModelFilterSet',
+    'DeviceFilterSet',
+    'SecretFilterSet',
+)
+
+
+class NumericInFilter(django_filters.BaseInFilter, django_filters.NumberFilter):
+    """
+    Filters for a set of numeric values. Example: id__in=100,200,300
+    """
+    pass
+
 
 class TreeNodeMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
     """
@@ -137,3 +154,47 @@ class DeviceFilterSet(django_filters.FilterSet):
         to_field_name='slug',
         label='Platform (slug)',
     )
+
+
+class SecretFilterSet(django_filters.FilterSet):
+    id__in = NumericInFilter(
+        field_name='id',
+        lookup_expr='in'
+    )
+    q = django_filters.CharFilter(
+        method='search',
+        label='Search',
+    )
+    role_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=SecretRole.objects.all(),
+        label='Role (ID)',
+    )
+    role = django_filters.ModelMultipleChoiceFilter(
+        field_name='role__slug',
+        queryset=SecretRole.objects.all(),
+        to_field_name='slug',
+        label='Role (slug)',
+    )
+    device_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Device.objects.all(),
+        label='Device (ID)',
+    )
+    device = django_filters.ModelMultipleChoiceFilter(
+        field_name='device__name',
+        queryset=Device.objects.all(),
+        to_field_name='name',
+        label='Device (name)',
+    )
+    tag = TagFilter()
+
+    class Meta:
+        model = Secret
+        fields = ['name']
+
+    def search(self, queryset, name, value):
+        if not value.strip():
+            return queryset
+        return queryset.filter(
+            Q(name__icontains=value) |
+            Q(device__name__icontains=value)
+        )

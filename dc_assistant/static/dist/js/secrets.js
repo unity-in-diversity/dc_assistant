@@ -89,7 +89,7 @@ $(document).ready(function() {
             },
             success: function (response, status) {
                 console.log("Received a new session key");
-                alert('Session key received! You may now unlock secrets.');
+                alert('Session key received! You may create secrets and unlock them.');
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 if (xhr.status == 403) {

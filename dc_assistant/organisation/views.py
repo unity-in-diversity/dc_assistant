@@ -165,12 +165,9 @@ class DeviceView(View):
         device = get_object_or_404(Device.objects.prefetch_related(
             'location__region', 'device_role', 'platform'
         ), pk=pk)
-
-        #services = device.services.all()
-        #secrets = device.secrets.all()
+        secrets = device.secrets.all()
 
         return render(request, 'organisation/device.html', {
             'device': device,
-            #'services': services,
-            #'secrets': secrets,
+            'secrets': secrets,
         })

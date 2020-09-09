@@ -5,7 +5,7 @@ from django.forms import TextInput
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
-from .models import Secret, UserKey
+from .models import Secret, UserKey, SecretRole
 
 
 def validate_rsa_key(key, is_secret=True):
@@ -100,25 +100,28 @@ class ActivateUserKeyForm(forms.Form):
     )
 
 
-class SecretAddForm(forms.BaseForm):
+class SecretAddForm(forms.ModelForm):
     plaintext = forms.CharField(
         max_length=65535,
         required=False,
         label='Plaintext',
+        help_text="Пароль",
         widget=forms.PasswordInput(
-            attrs={
-                'class': 'requires-session-key',
-            }
+            attrs={'class': 'requires-session-key form-control',}
         )
     )
     plaintext2 = forms.CharField(
         max_length=65535,
         required=False,
         label='Plaintext (verify)',
-        widget=forms.PasswordInput()
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'}
+        )
     )
+    role = forms.ModelChoiceField(queryset=SecretRole.objects.all(), empty_label="------", widget=forms.Select(attrs={'class': 'select2 form-control custom-select'}))
     tag = TagField(
         required=False,
+        label='Tags',
         help_text="Вводить через запятую",
         widget=TextInput(attrs={'data-role': 'tagsinput'}))
 
@@ -127,7 +130,9 @@ class SecretAddForm(forms.BaseForm):
         fields = [
             'name', 'role', 'plaintext', 'plaintext2', 'tag',
         ]
-
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'}),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

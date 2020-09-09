@@ -64,7 +64,7 @@ class RegionTable(tables.Table):
         verbose_name=''
     )
 
-    class Meta():
+    class Meta:
         model = Region
         fields = ('name', 'parent', 'slug', 'actions')
         attrs = {'class': 'table table-hover table-headings'}
