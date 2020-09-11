@@ -21,239 +21,239 @@
         <!-- ============================================================== -->
         <!-- End Buttons-->
         <!-- ============================================================== -->
-                        <div class="card">
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="{{ rack.get_absolute_url }}" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Rack</span></a> </li>
-                                <li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">ChangeLogs</span></a> </li>
-                            </ul>
-                            <!-- Tab panes -->
-                            <div class="tab-content tabcontent-border">
-                                <div class="tab-pane active" id="home" role="tabpanel">
-                                    <div class="p-20">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="card-body">
-                                                    <h4 class="card-title m-b-0">Device</h4>
-                                                </div>
-                                                <table class="table">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Location</td>
-                                                            <td>
-                                                                {% if device.location.region %}
-                                                                    <a href="{{ device.location.region.get_absolute_url }}">{{ device.location.region }}</a>
-                                                                    <i class="fas fa-angle-double-right"></i>
-                                                                {% endif %}
-                                                                <a href="{% url 'organisation:location' slug=device.location.slug %}"> <span class="badge badge-secondary"> {{ device.location }} </span></a>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Rack</td>
-                                                            <td>
-                                                                {% if device.rack %}
-                                                                    <a href="{% url 'organisation:rack' pk=device.rack.pk %}">{{ device.rack }}</a>
-                                                                {% else %}
-                                                                    <span class="text-muted">None</span>
-                                                                {% endif %}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Device Model</td>
-                                                            <td>
-                                                                <span>{{ device.device_model }} ({{ device.device_model.u_height }}U)</span>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Serial Number</td>
-                                                            <td><span>{{ device.serial }}</span></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="card-body">
-                                                    <h4 class="card-title m-b-0">Management</h4>
-                                                </div>
-                                                <table class="table">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Role</td>
-                                                            <td>
-                                                                <a href="{% url 'organisation:device_list' %}?role={{ device.device_role.slug }}">{{ device.device_role }}</a>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Platform</td>
-                                                            <td>
-                                                                {% if device.platform %}
-                                                                   <a href="{{ device.platform.get_absolute_url }}">{{ device.platform }}</a>
-                                                                {% else %}
-                                                                    <span class="text-muted">None</span>
-                                                                {% endif %}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Position</td>
-                                                            <td>
-                                                                {% if device.rack and device.position %}
-                                                                    <span>U{{ device.position }} / {{ device.get_face_position_display }}</span>
-                                                                {% elif device.rack and device.device_type.u_height %}
-                                                                    <span class="label label-warning">Not racked</span>
-                                                                {% else %}
-                                                                    <span class="text-muted">&mdash;</span>
-                                                                {% endif %}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>IPv4 address</td>
-                                                            <td> 0.0.0.0 тут будет IP</td>
-                                                        </tr>
-                                                        {% if device.cluster %}
-                                                            <tr>
-                                                                <td>Cluster</td>
-                                                                <td>
-                                                                    отображение инфо о кластере
-                                                                </td>
-                                                            </tr>
-                                                        {% endif %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="card-body">
-                                                    <div>
-                                                        <h4 class="card-title m-b-0">Comment</h4>
-                                                    </div>
-                                                    <div class="alert alert-secondary" role="alert">
-                                                      {% if rack.comment %}
-                                                            {{ rack.comment }}
-                                                        {% else %}
-                                                            <span class="text-muted">None</span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="card-body">
-                                                    <div>
-                                                        <h4 class="card-title m-b-0">Tags</h4>
-                                                    </div>
-                                                    {% include 'extend/tags_panel.html' with tags=rack.tag.all url='organisation:rack_list' %}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="card-body">
-                                                    <div>
-                                                        <h4 class="card-title m-b-0">Description</h4>
-                                                    </div>
-                                                    <div class="alert alert-secondary">
-                                                        {{ device.description }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                        {% if request.user.is_authenticated %}
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="card-body">
-                                                    <div>
-                                                        <h4 class="card-title m-b-0">Secrets</h4>
-                                                    </div>
-                                                    {% if secrets %}
-                                                    <div class="table-responsive">
-                                                        <table class="table table-hover panel-body">
-                                                            {% for secret in secrets %}
-                                                                <tr>
-                                                                    <td><a href="{% url 'secret:secret' pk=secret.pk %}">{{ secret.role }}</a></td>
-                                                                    <td>{{ secret.name }}</td>
-                                                                    <td id="secret_{{ secret.pk }}">********</td>
-                                                                    <td class="text-right noprint">
-                                                                        {% if secret|decryptable_by:request.user %}
-                                                                            <button class="btn btn-xs btn-success unlock-secret" secret-id="{{ secret.pk }}">
-                                                                                <i class="fa fa-lock"></i> Unlock
-                                                                            </button>
-                                                                            <button class="btn btn-xs btn-default copy-secret collapse" secret-id="{{ secret.pk }}" data-clipboard-target="#secret_{{ secret.pk }}">
-                                                                                <i class="fa fa-copy"></i> Copy
-                                                                            </button>
-                                                                            <button class="btn btn-xs btn-danger lock-secret collapse" secret-id="{{ secret.pk }}">
-                                                                                <i class="fa fa-unlock-alt"></i> Lock
-                                                                            </button>
-                                                                        {% else %}
-                                                                            <button class="btn btn-xs btn-default" disabled="disabled" title="Permission denied">
-                                                                                <i class="fa fa-lock"></i> Unlock
-                                                                            </button>
-                                                                        {% endif %}
-                                                                    </td>
-                                                                </tr>
-                                                            {% endfor %}
-                                                        </table>
-                                                    </div>
-                                                    {% else %}
-                                                    <div class="card-body">
-                                                        None found
-                                                    </div>
-                                                    {% endif %}
-                                                    {% if perms.secret.add_secret %}
-                                                        <form id="secret_form">
-                                                            {% csrf_token %}
-                                                        </form>
-                                                        <div class="panel-footer text-right noprint">
-                                                            <a href="{% url 'organisation:device_addsecret' pk=device.pk %}" class="btn btn-xs btn-primary">
-                                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                                                Add secret
-                                                            </a>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endif %}
-
-                                    </div>
-
-                                <div class="tab-pane active" id="profile" role="tabpanel1">
-                                    <div class="p-20">
-
-                                    </div>
+        <div class="card">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="{{ rack.get_absolute_url }}" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">Rack</span></a> </li>
+                <li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#" role="tab"><span class="hidden-sm-up"></span> <span class="hidden-xs-down">ChangeLogs</span></a> </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content tabcontent-border">
+                <div class="tab-pane active" id="home" role="tabpanel">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <h4 class="card-title m-b-0">Device</h4>
                                 </div>
-
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Location</td>
+                                            <td>
+                                                {% if device.location.region %}
+                                                    <a href="{{ device.location.region.get_absolute_url }}">{{ device.location.region }}</a>
+                                                    <i class="fas fa-angle-double-right"></i>
+                                                {% endif %}
+                                                <a href="{% url 'organisation:location' slug=device.location.slug %}"> <span class="badge badge-secondary"> {{ device.location }} </span></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rack</td>
+                                            <td>
+                                                {% if device.rack %}
+                                                    <a href="{% url 'organisation:rack' pk=device.rack.pk %}">{{ device.rack }}</a>
+                                                {% else %}
+                                                    <span class="text-muted">None</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Device Model</td>
+                                            <td>
+                                                <span>{{ device.device_model }} ({{ device.device_model.u_height }}U)</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Serial Number</td>
+                                            <td><span>{{ device.serial }}</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <h4 class="card-title m-b-0">Management</h4>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Role</td>
+                                            <td>
+                                                <a href="{% url 'organisation:device_list' %}?role={{ device.device_role.slug }}">{{ device.device_role }}</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Platform</td>
+                                            <td>
+                                                {% if device.platform %}
+                                                   <a href="{{ device.platform.get_absolute_url }}">{{ device.platform }}</a>
+                                                {% else %}
+                                                    <span class="text-muted">None</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Position</td>
+                                            <td>
+                                                {% if device.rack and device.position %}
+                                                    <span>U{{ device.position }} / {{ device.get_face_position_display }}</span>
+                                                {% elif device.rack and device.device_type.u_height %}
+                                                    <span class="label label-warning">Not racked</span>
+                                                {% else %}
+                                                    <span class="text-muted">&mdash;</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>IPv4 address</td>
+                                            <td> 0.0.0.0 тут будет IP</td>
+                                        </tr>
+                                        {% if device.cluster %}
+                                            <tr>
+                                                <td>Cluster</td>
+                                                <td>
+                                                    отображение инфо о кластере
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
-<div class="modal fade none-border" id="privkey_modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div>
+                                        <h4 class="card-title m-b-0">Comment</h4>
+                                    </div>
+                                    <div class="alert alert-secondary" role="alert">
+                                      {% if rack.comment %}
+                                            {{ rack.comment }}
+                                        {% else %}
+                                            <span class="text-muted">None</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div>
+                                        <h4 class="card-title m-b-0">Tags</h4>
+                                    </div>
+                                    {% include 'extend/tags_panel.html' with tags=rack.tag.all url='organisation:rack_list' %}
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="modal-header">
-                <h4 class="modal-title" id="privkey_modal_title"><span class="fas fa-lock" aria-hidden="true"></span><strong> Enter your private RSA key</strong></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <div>
+                                        <h4 class="card-title m-b-0">Description</h4>
+                                    </div>
+                                    <div class="alert alert-secondary">
+                                        {{ device.description }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="modal-body">
-                <p>There is no active session key. To request it, paste your private key. Your session key will be saved for future requests at this session.</p>
-                <div class="form-group">
-                    <textarea class="form-control" id="user_privkey" style="height: 300px;"></textarea>
+                        {% if request.user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <div>
+                                        <h4 class="card-title m-b-0">Secrets/Passwords</h4>
+                                    </div>
+                                    {% if secrets %}
+
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                {% for secret in secrets %}
+                                                    <tr>
+                                                        <td>{{ secret.name }}</td>
+                                                        <td id="secret_{{ secret.pk }}">********</td>
+                                                        <td><a href="{% url 'secret:secret' pk=secret.pk %}">{{ secret.role }}</a></td>
+                                                        <td class="text-right noprint">
+                                                            {% if secret|decryptable_by:request.user %}
+                                                                <button class="btn btn-xs btn-success unlock-secret" secret-id="{{ secret.pk }}">
+                                                                    <i class="fas fa-lock"></i> Unlock
+                                                                </button>
+                                                                <button class="btn btn-xs btn-default copy-secret collapse" secret-id="{{ secret.pk }}" data-clipboard-target="#secret_{{ secret.pk }}">
+                                                                    <i class="fas fa-copy"></i> Copy
+                                                                </button>
+                                                                <button class="btn btn-xs btn-danger lock-secret collapse" secret-id="{{ secret.pk }}">
+                                                                    <i class="fas fa-unlock-alt"></i> Lock
+                                                                </button>
+                                                            {% else %}
+                                                                <button class="btn btn-xs btn-default" disabled="disabled" title="Permission denied">
+                                                                    <i class="fas fa-lock"></i> Unlock
+                                                                </button>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+
+                                    {% else %}
+                                    <div class="card-body">
+                                        None found
+                                    </div>
+                                    {% endif %}
+                                    {% if perms.secret.add_secret %}
+                                        <form id="secret_form">
+                                            {% csrf_token %}
+                                        </form>
+                                        <div class="card-body text-right noprint">
+                                            <a href="{% url 'organisation:device_addsecret' pk=device.pk %}" class="btn btn-primary ">
+                                                Add secret
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                <div class="tab-pane active" id="profile" role="tabpanel1">
+                    <div class="p-20">
+
+                    </div>
                 </div>
-                <div class="form-group text-right noprint">
-                    <button id="request_session_key" class="btn btn-primary" data-dismiss="modal">Request session key</button>
-                </div>
-            </div>
 
+            </div>
         </div>
-    </div>
-</div>
+
+        <div class="modal fade none-border" id="privkey_modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="privkey_modal_title"><span class="fas fa-lock" aria-hidden="true"></span><strong> Enter your private RSA key</strong></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>There is no active session key. To request it, paste your private key. Your session key will be saved for future requests at this session.</p>
+                        <div class="form-group">
+                            <textarea class="form-control" id="user_privkey" style="height: 300px;"></textarea>
+                        </div>
+                        <div class="form-group text-right noprint">
+                            <button id="request_session_key" class="btn btn-primary" data-dismiss="modal">Request session key</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
 {% endblock %}
 
-
-
+{% block pagescript %}
+<script src="{% static 'dist/js/secrets.js' %}"></script>
+{% endblock %}

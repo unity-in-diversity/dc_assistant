@@ -10,24 +10,24 @@ from .models import Secret, UserKey, SecretRole
 
 def validate_rsa_key(key, is_secret=True):
     """
-    Validate the format and type of an RSA key.
+    Validate format and type key pair.
     """
     if key.startswith('ssh-rsa '):
-        raise forms.ValidationError("OpenSSH line format is not supported. Please ensure that your public is in PEM (base64) format.")
+        raise forms.ValidationError("OpenSSH format is not supported. You need PEM (base64) format.")
     try:
         key = RSA.importKey(key)
     except ValueError:
-        raise forms.ValidationError("Invalid RSA key. Please ensure that your key is in PEM (base64) format.")
+        raise forms.ValidationError("Invalid RSA key.  You need PEM (base64) format.")
     except Exception as e:
-        raise forms.ValidationError("Invalid key detected: {}".format(e))
+        raise forms.ValidationError("Invalid key: {}".format(e))
     if is_secret and not key.has_private():
-        raise forms.ValidationError("This looks like a public key. Please provide your private RSA key.")
+        raise forms.ValidationError("This looks like a public key. It needs your private key.")
     elif not is_secret and key.has_private():
-        raise forms.ValidationError("This looks like a private key. Please provide your public RSA key.")
+        raise forms.ValidationError("This looks like a private key. Please provide your public key.")
     try:
         PKCS1_OAEP.new(key)
     except Exception:
-        raise forms.ValidationError("Error validating RSA key. Please ensure that your key supports PKCS#1 OAEP.")
+        raise forms.ValidationError("Error validating key. Please ensure that your key valid.")
 
 
 class UserAuthenticationForm(AuthenticationForm):
@@ -65,7 +65,7 @@ class UserKeyForm(forms.ModelForm):
         model = UserKey
         fields = ['public_key']
         help_texts = {
-            'public_key': "Enter your public RSA key. Keep the private, save to file or notes. "
+            'public_key': "Enter your public key. Keep the private, save to file or notes. "
                           "You'll need it for decryption. Privat key like passphrase!",
         }
         labels = {
@@ -73,13 +73,12 @@ class UserKeyForm(forms.ModelForm):
         }
         widgets = {
             'public_key': Textarea(attrs={'class': 'form-control', 'rows': 12, })
-
         }
 
     def clean_public_key(self):
         key = self.cleaned_data['public_key']
 
-        # Validate the RSA key format.
+        # Validate the key format.
         validate_rsa_key(key, is_secret=False)
 
         return key
@@ -91,12 +90,10 @@ class ActivateUserKeyForm(forms.Form):
         label='User Keys'
     )
     secret_key = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                'class': 'vLargeTextField',
-            }
-        ),
-        label='Your private key'
+        label='Your private key',
+        widget=forms.Textarea(attrs={
+            'class': 'vLargeTextField'
+        })
     )
 
 
@@ -106,24 +103,33 @@ class SecretAddForm(forms.ModelForm):
         required=False,
         label='Plaintext',
         help_text="Пароль",
-        widget=forms.PasswordInput(
-            attrs={'class': 'requires-session-key form-control',}
-        )
+        widget=forms.PasswordInput(attrs={
+            'class': 'requires-session-key form-control'
+        })
     )
     plaintext2 = forms.CharField(
         max_length=65535,
         required=False,
         label='Plaintext (verify)',
-        widget=forms.PasswordInput(
-            attrs={'class': 'form-control'}
-        )
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control'
+        })
     )
-    role = forms.ModelChoiceField(queryset=SecretRole.objects.all(), empty_label="------", widget=forms.Select(attrs={'class': 'select2 form-control custom-select'}))
+    role = forms.ModelChoiceField(
+        queryset=SecretRole.objects.all(),
+        empty_label="------",
+        widget=forms.Select(attrs={
+            'class': 'select2 form-control custom-select'
+        })
+    )
     tag = TagField(
         required=False,
         label='Tags',
         help_text="Вводить через запятую",
-        widget=TextInput(attrs={'data-role': 'tagsinput'}))
+        widget=TextInput(attrs={
+            'data-role': 'tagsinput'
+        })
+    )
 
     class Meta:
         model = Secret
@@ -135,15 +141,13 @@ class SecretAddForm(forms.ModelForm):
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         # A plaintext value is required when creating a new Secret
         if not self.instance.pk:
             self.fields['plaintext'].required = True
 
     def clean(self):
-
         # Verify that the provided plaintext values match
         if self.cleaned_data['plaintext'] != self.cleaned_data['plaintext2']:
             raise forms.ValidationError({
-                'plaintext2': "Secrets(passwords) do not match. Please check input try again."
+                'plaintext2': "Secrets(passwords) do not match. Please check input, try again."
             })

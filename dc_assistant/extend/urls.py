@@ -8,5 +8,5 @@ app_name = 'extend'
 urlpatterns = [
 
     path('tags/', views.TagListView.as_view(), name='tag_list'),
-    re_path(r'^rack-autocomplete/$', RackAutocomplete.as_view(), name='rack-autocomplete'),
+    path('rack-autocomplete', RackAutocomplete.as_view(), name='rack_autocomplete'),
     ]

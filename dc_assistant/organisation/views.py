@@ -88,7 +88,6 @@ class RackAdd(CreateView):
 
 
 class RackView(View):
-
     def get(self, request, pk):
 
         rack = get_object_or_404(Rack.objects.prefetch_related('location__region'), pk=pk)
@@ -159,7 +158,6 @@ class DeviceListView(ListObjectsView):
 
 
 class DeviceView(View):
-
     def get(self, request, pk):
 
         device = get_object_or_404(Device.objects.prefetch_related(

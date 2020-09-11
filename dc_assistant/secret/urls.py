@@ -8,5 +8,4 @@ urlpatterns = [
     path('user-key/edit/', views.UserKeyAddEditView.as_view(), name='userkey_edit'),
     path('secrets/', views.SecretListView.as_view(), name='secret_list'),
     path('secrets/<int:pk>/', views.SecretView.as_view(), name='secret'),
-
     ]

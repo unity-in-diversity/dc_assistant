@@ -62,7 +62,7 @@ class UserProfileView(LoginRequiredMixin, View):
 
 def get_session_key(request):
     """
-    Extract and decode the session key sent with a request. Returns None if no session key was provided.
+    Extract and decode the session key from request.
     """
     session_key = request.COOKIES.get('session_key', None)
     if session_key is not None:
@@ -82,11 +82,9 @@ def secret_add(request, pk):
     if request.method == 'POST':
         form = SecretAddForm(request.POST, instance=secret)
         if form.is_valid():
-
-            # We need a valid session key in order to create a Secret
+            # Valid session key in order to create a Secret
             if session_key is None:
                 form.add_error(None, "No session key was provided with the request. Unable to encrypt secret data.")
-
             # Create and encrypt the new Secret
             else:
                 master_key = None
@@ -104,12 +102,9 @@ def secret_add(request, pk):
                     secret.encrypt(master_key)
                     secret.save()
                     form.save_m2m()
-
                     messages.success(request, "Added new secret: {}.".format(secret))
-                    # if '_addanother' in request.POST:
-                    #     return redirect('organisation:device_addsecret', pk=device.pk)
-                    # else:
-                    return redirect('secret:secret', pk=secret.pk)
+
+                    return redirect('organisation:device', pk=device.pk)
 
     else:
         form = SecretAddForm(instance=secret)
@@ -180,6 +175,6 @@ class SecretView(PermissionRequiredMixin, View):
 
         secret = get_object_or_404(Secret, pk=pk)
 
-        return render(request, 'secrets/secret.html', {
+        return render(request, 'secret/secret.html', {
             'secret': secret,
         })

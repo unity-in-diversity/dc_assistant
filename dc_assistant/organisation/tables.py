@@ -3,11 +3,6 @@ import django_tables2 as tables
 from django_tables2.utils import Accessor
 from .models import Region, Location, Rack, VendorModel, DeviceRole, Device, Platform
 
-# REGION_ACTIONS = """
-# {% if perms.dcim.change_region %}
-#     <a href="{% url 'dcim:region_edit' pk=record.pk %}?return_url={{ request.path }}" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></a>
-# {% endif %}
-# """
 
 REGION_ACTIONS = """
     <a href="{% url 'organisation:region_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
@@ -92,11 +87,11 @@ class RackTable(tables.Table):
         attrs = {'class': 'table table-hover table-headings',}
 
 class VendorModelTable(tables.Table):
-    #pk = ToggleColumn()
     #model = tables.LinkColumn('organisation:model', args=[Accessor('pk')], verbose_name='Device Model')
     instance_count = tables.TemplateColumn(
         template_code=DEVICEMODEL_INSTANCES_TEMPLATE,
         verbose_name='Instances')
+
     class Meta:
         model = VendorModel
         fields = ('model', 'vendor', 'u_height', 'depth', 'instance_count',)
@@ -109,7 +104,6 @@ class DeviceRoleTable(tables.Table):
         orderable=False,
         verbose_name='Devices'
     )
-
     color = tables.TemplateColumn(COLOR_LABEL, verbose_name='Label')
     # slug = tables.Column(verbose_name='Slug')
     # actions = tables.TemplateColumn(
@@ -136,26 +130,18 @@ class DeviceTable(tables.Table):
     #     text=lambda record: record.device_model.display_name
     # )
 
-
     class Meta:
         model = Device
         fields = ('name', 'platform', 'device_role', 'device_model', 'location', 'rack',)
         attrs = {'class': 'table table-hover table-headings', }
 
 class PlatformTable(tables.Table):
-
     device_count = tables.TemplateColumn(
         template_code=PLATFORM_DEVICE_COUNT,
         accessor=Accessor('devices.count'),
         orderable=False,
         verbose_name='Devices'
     )
-
-    # actions = tables.TemplateColumn(
-    #     template_code=PLATFORM_ACTIONS,
-    #     attrs={'td': {'class': 'text-right noprint'}},
-    #     verbose_name=''
-    # )
 
     class Meta:
         model = Platform

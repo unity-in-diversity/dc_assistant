@@ -7,14 +7,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
 from extend.models import TaggedItem, ImgAttach, LoggingModel
 from extend.forms import ColorField
+from django.core.exceptions import ValidationError
 from smart_selects.db_fields import ChainedForeignKey
 
 
-#TODO: в url.py каждого приложения определить пространство уролов используемое в функциях get_absolute_url моделей
-
 class Region(MPTTModel):
     """
-    Регион/город, каждая созданная точка может быть родителем для другой
+    Country/Regin/City where place location. Every instance of this class can be parent for the other one
     """
     parent = TreeForeignKey(
         to='self',
@@ -22,15 +21,15 @@ class Region(MPTTModel):
         related_name='children',
         blank=True,
         null=True,
-        db_index=True)
-
+        db_index=True
+    )
     name = models.CharField(
         max_length=50,
-        unique=True)
-
+        unique=True
+    )
     slug = models.SlugField(
-        unique=True)
-
+        unique=True
+    )
     class MPTTMeta:
         order_insertion_by = ['name']
 
@@ -42,34 +41,36 @@ class Region(MPTTModel):
 
 class Location(LoggingModel):
     """
-    Место расположения инфраструктуры (здание, офис, цод и т.п.)
+    The place where located IT infrastructure (Build, Office, DC and so on)
     """
     name = models.CharField(
         max_length=50,
-        unique=True)
-
+        unique=True
+    )
     slug = models.SlugField(
-        unique=True)
-
+        unique=True
+    )
     region = models.ForeignKey(
         to=Region,
         on_delete=models.SET_NULL,
         related_name='locations',
         blank=True,
-        null=True)
-
+        null=True
+    )
     physical_address = models.CharField(
         max_length=200,
-        blank=True)
-
+        blank=True
+    )
     description = models.CharField(
         max_length=100,
-        blank=True)
-
+        blank=True
+    )
     comment = models.TextField(
-        blank=True)
-
-    tag = TaggableManager(through=TaggedItem)
+        blank=True
+    )
+    tag = TaggableManager(
+        through=TaggedItem
+    )
 
     class Meta:
         ordering = ('name',)
@@ -82,7 +83,7 @@ class Location(LoggingModel):
 
 class Rack(LoggingModel):
     """
-    Конфигурация стойки
+    Rack configuration
     """
     TYPE_1FRAME = '1-frame'
     TYPE_2FRAME = '2-frame'
@@ -98,43 +99,41 @@ class Rack(LoggingModel):
         (TYPE_2FRAME, 'Открытая стойка двухрамочная'),
         (TYPE_WALLCABINET, 'Серверный шкаф настенный'),
         (TYPE_FLOORCABINET, 'Серверный шкаф напольный'),
-        )
-
+    )
     RACK_UNIT_DESC = (
         (TOP_TO_BUTTOM, 'Сверху вниз'),
         (BUTTOM_TO_TOP, 'Снизу вверх'),
     )
-
     name = models.CharField(
-        max_length=50)
-
+        max_length=50
+    )
     location = models.ForeignKey(
         to=Location,
         on_delete=models.PROTECT,
-        related_name='racks')
-
+        related_name='racks'
+    )
     u_height = models.PositiveSmallIntegerField(
         default=44,
         verbose_name='Unit Height',
-        validators=[MinValueValidator(1), MaxValueValidator(100)])
-
+        validators=[MinValueValidator(1), MaxValueValidator(100)]
+    )
     desc_units = models.PositiveSmallIntegerField(
         choices=RACK_UNIT_DESC,
         default=BUTTOM_TO_TOP,
         verbose_name='Orientation',
-        help_text='По умолчанию нумерация юнитов снизу вверх')
-
+        help_text='По умолчанию нумерация юнитов снизу вверх'
+    )
     racktype = models.CharField(
         max_length=50,
         choices=RACK_TYPE_CHOICES,
-        default=TYPE_FLOORCABINET,)
-
+        default=TYPE_FLOORCABINET,
+    )
     comment = models.TextField(
-        blank=True)
+        blank=True
+    )
 
     class Meta:
         ordering = ('location', 'name', 'pk')
-
 
     def __str__(self):
         return self.name
@@ -153,17 +152,17 @@ class Rack(LoggingModel):
     #         return self.name
     #     return ""
 
-
 class Vendor(LoggingModel):
     """
-    Представляет список производителей.
+    Device`s vendors
     """
     name = models.CharField(
         max_length=50,
-        unique=True)
-
+        unique=True
+    )
     slug = models.SlugField(
-        unique=True)
+        unique=True
+    )
 
     def __str__(self):
         return self.name
@@ -173,41 +172,41 @@ class Vendor(LoggingModel):
 
 class VendorModel(LoggingModel):
     """
-    Представялет конкретные модели оборудования вендоров
+    Vendor models of device
     """
     vendor = models.ForeignKey(
         to=Vendor,
         on_delete=models.PROTECT,
-        related_name='device_models')
-
+        related_name='device_models'
+    )
     model = models.CharField(
-        max_length=50)
-
-    slug = models.SlugField()
-
+        max_length=50
+    )
+    slug = models.SlugField(
+        unique=True
+    )
     u_height = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name='Height (U)')
-
+        verbose_name='Height (U)'
+    )
     depth = models.BooleanField(
         default=True,
         verbose_name='Full Depth',
-        help_text='Default is Full Depth')
-
+        help_text='Default is Full Depth'
+    )
     front_image = models.ImageField(
         upload_to='imgs-devicemodel',
-        blank=True)
-
+        blank=True
+    )
     rear_image = models.ImageField(
         upload_to='imgs-devicemodel',
-        blank=True)
-
+        blank=True
+    )
     comment = models.TextField(
-        blank=True)
-
+        blank=True
+    )
     # def get_absolute_url(self):
     #     return reverse('organisation:vendormodel', args=[self.pk])
-
     @property
     def display_name(self):
         return '{} {}'.format(self.vendor.name, self.model)
@@ -217,14 +216,18 @@ class VendorModel(LoggingModel):
 
 
 class Platform(LoggingModel):
+    """
+    Platform is software or firmware running on the devices
+    """
 
     name = models.CharField(
         max_length=100,
-        unique=True)
-
+        unique=True
+    )
     slug = models.SlugField(
         unique=True,
-        max_length=100)
+        max_length=100
+    )
 
     class Meta:
         ordering = ['name']
@@ -237,18 +240,21 @@ class Platform(LoggingModel):
 
 
 class DeviceRole(LoggingModel):
+    """
+    Role of device or vm or service. For example device can be group by funcionality role (file server, mail server)
+    """
 
     name = models.CharField(
         max_length=50,
-        unique=True)
-
+        unique=True
+    )
     slug = models.SlugField(
-        unique=True)
-
+        unique=True
+    )
     description = models.CharField(
         max_length=100,
-        blank=True)
-
+        blank=True
+    )
     color = ColorField()
 
     class Meta:
@@ -260,7 +266,7 @@ class DeviceRole(LoggingModel):
 
 class Device(LoggingModel):
     """
-    Представление единиц оборудованиея со свойствами и связями
+    Device instance with. Each device must be assigned to location and can be place to rack.
     """
 
     #TODO: добавить обьединение в кластер, генерация IP адресов
@@ -269,88 +275,89 @@ class Device(LoggingModel):
     REAR = 0
 
     RACK_SIDE_CHOICES = (
-        (FRONT, 'Размещено на лицевой стороне стойки'),
-        (REAR, 'Размещено на обратной стороне стойки'),
+        (FRONT, 'Located at the front of rack'),
+        (REAR, 'Located at the rear of rack'),
     )
-
-    #TODO: добавить выбор типа оборудования и поля с выбором
 
     name = models.CharField(
         max_length=50,
-        unique=True)
-
+        unique=True
+    )
     device_model = models.ForeignKey(
         to=VendorModel,
         on_delete=models.PROTECT,
-        related_name='instances')
-
+        related_name='instances'
+    )
     device_role = models.ForeignKey(
         to=DeviceRole,
         on_delete=models.PROTECT,
-        related_name='devices')
-
+        related_name='devices'
+    )
     platform = models.ForeignKey(
         to=Platform,
         on_delete=models.SET_NULL,
         related_name='devices',
         blank=True,
-        null=True)
-
+        null=True
+    )
     serial = models.CharField(
         max_length=50,
         blank=True,
-        verbose_name='Серийный номер')
-
+        verbose_name='Serial number'
+    )
     location = models.ForeignKey(
         to=Location,
         on_delete=models.PROTECT,
-        related_name='devices')
-
+        related_name='devices'
+    )
     rack = models.ForeignKey(
         to=Rack,
         on_delete=models.PROTECT,
         related_name='devices',
         blank=True,
-        null=True)
-
+        null=True
+    )
     position = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
         validators=[MinValueValidator(1)],
-        verbose_name='Номер юнита',
-        help_text='Номер юнита с которого начинается размещение оборудование в стойке')
-
+        verbose_name='Unit Number',
+        help_text='Unit Number device starts location in the rack'
+    )
     face_position = models.PositiveSmallIntegerField(
         choices=RACK_SIDE_CHOICES,
         default=FRONT,
         blank=True,
-        null=True)
-
+        null=True
+    )
 #    cluster = models.ForeignKey(
 #        to='Cluster',
 #        on_delete=models.SET_NULL,
 #        related_name='devices',
 #        blank=True,
-#        null=True)
-
+#        null=True
+#    )
 #    primary_ip = models.OneToOneField(
 #        to='IPAddress',
 #        on_delete=models.SET_NULL,
 #        related_name='primary_ip',
 #        blank=True,
 #        null=True,
-#        verbose_name='Основной IP адрес')
-
+#        verbose_name='Основной IP адрес'
+#    )
     description = models.CharField(
         max_length=100,
-        blank=True)
-
+        blank=True
+    )
     comment = models.TextField(
-        blank=True)
-
-    images = GenericRelation(to=ImgAttach)
-
-    tag = TaggableManager(through=TaggedItem)
+        blank=True
+    )
+    images = GenericRelation(
+        to=ImgAttach
+    )
+    tag = TaggableManager(
+        through=TaggedItem
+    )
 
     class Meta:
         ordering = ('name', 'pk')
@@ -361,3 +368,16 @@ class Device(LoggingModel):
     def get_absolute_url(self):
         return reverse('organisation:device', args=[self.pk])
 
+    def clean(self):
+
+        super().clean()
+
+        if self.rack is None:
+            if self.position:
+                raise ValidationError({
+                    'position': "Cannot select position without rack selected.",
+                })
+            if self.face_position:
+                raise ValidationError({
+                    'face_position': "Cannot select face_position without rack selected.",
+                })

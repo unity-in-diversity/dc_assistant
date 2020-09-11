@@ -1,12 +1,11 @@
 from django.urls import path
 from . import views
 from secret.views import secret_add
-from dc_assistant import views as homeviews
+
 
 app_name = 'organisation'
 
 urlpatterns = [
-    #path('regions/', views.region_list_view, name='region_list'),
     path('regions/', views.RegionListView.as_view(), name='region_list'),
     path('regions/add', views.RegionAdd.as_view(), name='region_add'),
     path('regions/<int:pk>/edit', views.RegionEdit.as_view(), name='region_edit'),

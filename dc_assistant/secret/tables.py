@@ -8,6 +8,5 @@ class SecretTable(tables.Table):
 
     class Meta:
         model = Secret
-        fields = ('name', 'role', 'device'
-                  )
+        fields = ('name', 'role', 'device')
         attrs = {'class': 'table table-hover table-headings'}

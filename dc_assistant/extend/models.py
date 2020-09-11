@@ -15,7 +15,6 @@ __all__ = (
 )
 
 class Tag(TagBase):
-
     color = ColorField(
         default='9e9e9e'
     )
@@ -38,20 +37,16 @@ class Tag(TagBase):
         return slug
 
 class TaggedItem(GenericTaggedItemBase):
-
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE,
         related_name="%(app_label)s_%(class)s_items",
     )
 
-    # class Meta:
-    #     index_together = (("content_type", "object_id"))
-
 
 def img_upload(instance, filename):
     """
-    Преобразовываем, переименовываем с учтом объекта к которму относится картинка.
+    Transform, rename picture according the object
     """
     path = 'imgs-attachments/'
     extension = filename.rsplit('.')[-1].lower()
@@ -65,32 +60,31 @@ def img_upload(instance, filename):
 
 class ImgAttach(models.Model):
     """
-    Хранение картинок связанных с объектами различных моделей
+    Store picture for instances of all models
     """
     content_type = models.ForeignKey(
         to=ContentType,
-        on_delete=models.CASCADE)
-
+        on_delete=models.CASCADE
+    )
     object_id = models.PositiveIntegerField()
     parent = GenericForeignKey(
         ct_field='content_type',
-        fk_field='object_id')
-
+        fk_field='object_id'
+    )
     image = models.ImageField(
         upload_to=img_upload,
         height_field='image_height',
-        width_field='image_width')
-
+        width_field='image_width'
+    )
     image_height = models.PositiveSmallIntegerField()
     image_width = models.PositiveSmallIntegerField()
-
     name = models.CharField(
         max_length=50,
-        blank=True)
-
+        blank=True
+    )
     created = models.DateTimeField(
-        auto_now_add=True)
-
+        auto_now_add=True
+    )
     class Meta:
         ordering = ('name', 'pk')
 
@@ -102,6 +96,9 @@ class ImgAttach(models.Model):
 
 
 class LoggingModel(models.Model):
+    """
+    Extends models to store create/update information of model instances
+    """
     created = models.DateField(
         auto_now_add=True,
         blank=True,

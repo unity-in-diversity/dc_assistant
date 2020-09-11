@@ -11,12 +11,7 @@ from dal import autocomplete
 
 class ListObjectsView(View):
     """
-    List View таблицы объектов.
-
-    queryset: запрос для отображения
-    filter: фильр django-filter примененый к запросу
-    table: таблица django-tables2 используется для отрисовки списка объектов
-    template_name: html шаблон для ренедеринга
+    List View object list as table.
     """
     queryset = None
     filterset = None
@@ -51,6 +46,11 @@ class TagListView(View):
     pass
 
 class RackAutocomplete(autocomplete.Select2QuerySetView):
+    """
+    Filed form widget by js ajax send request to this view.
+    View Filter results based on the value of other fields in the same Form.
+    View return queryset to Form field.
+    """
     def get_queryset(self):
         # if not self.request.user.is_authenticated:
         #     return Rack.objects.none()

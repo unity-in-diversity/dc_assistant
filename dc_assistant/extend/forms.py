@@ -44,9 +44,10 @@ def add_blank_choice(choices):
     """
     return ((None, '---------'),) + tuple(choices)
 
+
 class ColorSelect(forms.Select):
     """
-    Extends the built-in Select widget to colorize each <option>.
+    Extend the built-in Select widget to colorize each option.
     """
     option_template_name = 'colorselect.html'
 
@@ -55,7 +56,11 @@ class ColorSelect(forms.Select):
         super().__init__(*args, **kwargs)
         self.attrs['class'] = 'dc-select2-color-picker'
 
+
 class ColorField(models.CharField):
+    """
+    Extend CharField to colorize each option if need.
+    """
     default_validators = [ColorValidator]
     description = "A hexadecimal RGB color code"
 

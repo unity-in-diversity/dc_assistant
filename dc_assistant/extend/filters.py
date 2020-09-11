@@ -16,7 +16,7 @@ __all__ = (
 
 class NumericInFilter(django_filters.BaseInFilter, django_filters.NumberFilter):
     """
-    Filters for a set of numeric values. Example: id__in=100,200,300
+    Filters for set of numeric values. Example: id__in=100,200,300
     """
     pass
 
@@ -38,7 +38,7 @@ class TreeNodeMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
 
 class TagFilter(django_filters.ModelMultipleChoiceFilter):
     """
-    Match on one or more assigned tags. If multiple tags are specified (e.g. ?tag=foo&tag=bar), the queryset is filtered
+    Match one or more tags. If two and more tags (?tag=onetag&tag=secondtag), the queryset is filtered
     to objects matching all tags.
     """
     def __init__(self, *args, **kwargs):
@@ -63,7 +63,6 @@ class LocationFilterSet(django_filters.FilterSet):
         to_field_name='slug',
         label='Region (slug)',
     )
-
     tag = TagFilter()
 
     class Meta:
@@ -72,28 +71,8 @@ class LocationFilterSet(django_filters.FilterSet):
             'id', 'name', 'slug',
         ]
 
-    # def search(self, queryset, name, value):
-    #     if not value.strip():
-    #         return queryset
-    #     qs_filter = (
-    #         Q(name__icontains=value) |
-    #         Q(facility__icontains=value) |
-    #         Q(description__icontains=value) |
-    #         Q(physical_address__icontains=value) |
-    #         Q(shipping_address__icontains=value) |
-    #         Q(contact_name__icontains=value) |
-    #         Q(contact_phone__icontains=value) |
-    #         Q(contact_email__icontains=value) |
-    #         Q(comments__icontains=value)
-    #     )
-    #     try:
-    #         qs_filter |= Q(asn=int(value.strip()))
-    #     except ValueError:
-    #         pass
-    #     return queryset.filter(qs_filter)
 
 class RackFilterSet(django_filters.FilterSet):
-
     location = django_filters.ModelMultipleChoiceFilter(
         field_name='location__slug',
         queryset=Location.objects.all(),
@@ -131,14 +110,12 @@ class DeviceFilterSet(django_filters.FilterSet):
         queryset=Rack.objects.all(),
         label='Rack (ID)',
     )
-
     role = django_filters.ModelMultipleChoiceFilter(
         field_name='device_role__slug',
         queryset=DeviceRole.objects.all(),
         to_field_name='slug',
         label='Role (slug)',
     )
-
     device_model_id = django_filters.ModelMultipleChoiceFilter(
         queryset=VendorModel.objects.all(),
         label='Device type (ID)',
