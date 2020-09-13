@@ -19,7 +19,7 @@ class RegionListView(PermissionRequiredMixin, ListObjectsView):
 
 
 class RegionAdd(CreateView):
-    permission_required = 'organisation.edit_region'
+    permission_required = 'organisation.add_region'
     form_class = RegionAddForm
     model = Region
     success_url = reverse_lazy('organisation:region_list')
@@ -43,6 +43,7 @@ class LocationListView(PermissionRequiredMixin, ListObjectsView):
 
 
 class LocationAdd(CreateView):
+    permission_required = 'organisation.add_location'
     form_class = LocationAddForm
     model = Location
     success_url = reverse_lazy('organisation:location_list')

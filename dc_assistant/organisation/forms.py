@@ -206,11 +206,16 @@ class PlatformAddForm(forms.ModelForm):
 
 
 class DeviceAddForm(forms.ModelForm):
-    error_css_class = 'is-invalid'
+    error_css_class = 'error'
 
     location = forms.ModelChoiceField(
         queryset=Location.objects.all(),
-        required=False,
+        widget=forms.Select(attrs={
+            'class': 'select2 form-control custom-select'
+        })
+    )
+    device_model = forms.ModelChoiceField(
+        queryset=VendorModel.objects.all(),
         widget=forms.Select(attrs={
             'class': 'select2 form-control custom-select'
         })

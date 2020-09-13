@@ -381,3 +381,5 @@ class Device(LoggingModel):
                 raise ValidationError({
                     'face_position': "Cannot select face_position without rack selected.",
                 })
+
+
