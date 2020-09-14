@@ -117,7 +117,7 @@ class Rack(LoggingModel):
         verbose_name='Unit Height',
         validators=[MinValueValidator(1), MaxValueValidator(100)]
     )
-    desc_units = models.PositiveSmallIntegerField(
+    desc_units = models.BooleanField(
         choices=RACK_UNIT_DESC,
         default=BUTTOM_TO_TOP,
         verbose_name='Orientation',

@@ -13,33 +13,41 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from django.core.exceptions import ImproperlyConfigured
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 try:
     from dc_assistant import configuration
 except ImportError:
     raise ImproperlyConfigured(
         "Configuration file is not present. Please define dc_assistant/dc_assistant/configuration.py"
     )
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+for parameter in ['ALLOWED_HOSTS', 'DATABASE', 'SECRET_KEY']:
+    DATABASE = getattr(configuration, 'DATABASE')
+    #print(DATABASE)
+    if not hasattr(configuration, parameter):
+        raise ImproperlyConfigured(
+            "Parameter {} is missing from configuration.py.".format(parameter)
+        )
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_r^9!7plgkf2u-ri^fga&c^1gohf@8x0=#rzgdq3f(a9gd*h!='
-
+BASE_PATH = getattr(configuration, 'BASE_PATH', '')
+if BASE_PATH:
+    BASE_PATH = BASE_PATH.strip('/') + '/'  # Enforce trailing slash only
+ALLOWED_HOSTS = getattr(configuration, 'ALLOWED_HOSTS')
+DATABASE = getattr(configuration, 'DATABASE')
+SECRET_KEY = getattr(configuration, 'SECRET_KEY')
+PAGINATE_COUNT = getattr(configuration, 'PAGINATE_COUNT', 5)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getattr(configuration, 'DEBUG', False)
 
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 JQUERY_URL = True
-
-# Application definition
 
 INSTALLED_APPS = [
     'dal',
@@ -93,6 +101,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'dc_assistant.wsgi.application'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -102,19 +112,16 @@ REST_FRAMEWORK = {
     ]
 }
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-#TODO move to file configuration
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': DATABASE,
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -131,15 +138,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#TODO move to file configuration
-BASE_PATH = ''
-
-# Authentication URLs
 LOGIN_URL = '/{}login/'.format(BASE_PATH)
-LOGOUT_REDIRECT_URL = 'home'
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
+LOGOUT_REDIRECT_URL = 'home'
 
 LANGUAGE_CODE = 'ru-ru'
 
@@ -151,20 +152,17 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATIC_URL = '/prj-static/'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATICFILES_DIRS = [(os.path.join(BASE_DIR, "prj-static"))]
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = BASE_DIR +'/static'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-PAGINATE_COUNT = getattr(configuration, 'PAGINATE_COUNT', 5)
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = getattr(configuration, 'MEDIA_ROOT', os.path.join(BASE_DIR, 'media')).rstrip('/')
 
 TAGGIT_CASE_INSENSITIVE = True
 
-VERSION = '2.7.8-dev'
+#VERSION = '2.7.8-dev'
