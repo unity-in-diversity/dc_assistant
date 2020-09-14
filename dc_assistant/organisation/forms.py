@@ -34,7 +34,7 @@ class SlugField(forms.SlugField):
 
 class RegionAddForm(forms.ModelForm):
     parent = TreeNodeChoiceField(
-        label='Родитель',
+        label='Parent',
         required=False,
         queryset=Region.objects.all(),
         level_indicator = u'-',
@@ -43,7 +43,7 @@ class RegionAddForm(forms.ModelForm):
         })
     )
     name = forms.CharField(
-        label='Название региона',
+        label='Region Name',
         widget=forms.TextInput(attrs={
             'class': 'form-control'
         })
@@ -74,7 +74,7 @@ class LocationAddForm(forms.ModelForm):
         })
     )
     region = TreeNodeChoiceField(
-        label='Регион',
+        label='Region',
         queryset=Region.objects.all(),
         required=False,
         level_indicator=u'-',

@@ -95,14 +95,14 @@ class Rack(LoggingModel):
 
 
     RACK_TYPE_CHOICES = (
-        (TYPE_1FRAME, 'Открытая стойка однорамочная'),
-        (TYPE_2FRAME, 'Открытая стойка двухрамочная'),
-        (TYPE_WALLCABINET, 'Серверный шкаф настенный'),
-        (TYPE_FLOORCABINET, 'Серверный шкаф напольный'),
+        (TYPE_1FRAME, 'One Frame rack'),
+        (TYPE_2FRAME, 'Two Frame rack'),
+        (TYPE_WALLCABINET, 'Wall-mounted cabinet'),
+        (TYPE_FLOORCABINET, 'Floor-mounted cabinet'),
     )
     RACK_UNIT_DESC = (
-        (TOP_TO_BUTTOM, 'Сверху вниз'),
-        (BUTTOM_TO_TOP, 'Снизу вверх'),
+        (TOP_TO_BUTTOM, 'Top to buttom'),
+        (BUTTOM_TO_TOP, 'Buttom to top'),
     )
     name = models.CharField(
         max_length=50
@@ -121,7 +121,7 @@ class Rack(LoggingModel):
         choices=RACK_UNIT_DESC,
         default=BUTTOM_TO_TOP,
         verbose_name='Orientation',
-        help_text='По умолчанию нумерация юнитов снизу вверх'
+        help_text='Default buttom to top'
     )
     racktype = models.CharField(
         max_length=50,
