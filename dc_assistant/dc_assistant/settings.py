@@ -152,7 +152,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/prj-static/'
+#STATIC_URL = '/prj-static/'
+STATIC_URL = '/{}static/'.format(BASE_PATH)
 
 STATICFILES_DIRS = [(os.path.join(BASE_DIR, "prj-static"))]
 
