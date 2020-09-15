@@ -1,12 +1,16 @@
 from django.core.management.base import BaseCommand
 from organisation.models import Vendor
-from dc_assistant.settings import MEDIA_ROOT
+from dc_assistant import settings
 import csv
+import os
+
+print(os.path.dirname)
+BASE_DIR = settings.BASE_DIR
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        vendors = str(MEDIA_ROOT + "\\vendors.csv")
+        vendors = str(BASE_DIR + "\\initializers\\vendors.csv")
         with open(vendors, newline='') as f:
             reader = csv.reader(f, delimiter=';')
             for row in reader:

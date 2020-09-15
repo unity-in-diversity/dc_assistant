@@ -4,23 +4,23 @@
 
                 <div class="row justify-content-center">
                     <div class="col-md-9">
-                        <h2 class="card-title">Add new Device Role</h2>
+                        <h2 class="card-title">Add new Vendor</h2>
                         <div class="card">
-                            <form class="form form-horizontal" method="post" id="DeviceAddForm">
+                            <form class="form form-horizontal" method="post" id="PlatformAddForm">
                                 <div class="card-body">
-                                    {% csrf_token %}
-                                    {{ form.as_p }}
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
                                 </div>
                                 <div class="border-top">
                                     <div class="card-body">
-                                        {% include 'extend/cu_buttons.html' with obj=role %}
-                                        <a href="{% url 'organisation:role_list' %}" class="btn btn-default">Cancel</a>
+                                        {% include 'extend/cu_buttons.html' with obj=vendor %}
+                                        <a href="{% url 'organisation:vendor_list' %}" class="btn btn-default">Cancel</a>
                                     </div>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
 
 {% endblock %}
-

@@ -205,6 +205,22 @@ class PlatformAddForm(forms.ModelForm):
         }
 
 
+class VendorAddForm(forms.ModelForm):
+    slug = SlugField(
+        slug_source='name',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control'
+        })
+    )
+
+    class Meta:
+        model = Vendor
+        fields = ['name', 'slug',]
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'}),
+        }
+
+
 class DeviceAddForm(forms.ModelForm):
     error_css_class = 'error'
 

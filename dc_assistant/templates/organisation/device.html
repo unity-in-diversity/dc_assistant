@@ -12,8 +12,7 @@
                     <h2 class="card-title">{{ device }}</h2>
                 </div>
                 <div class="col-md-3 col-sm-3 text-right">
-                    <a class="btn btn-warning btn-lg" href="#" role="button">Edit</a>
-                    <a class="btn btn-danger btn-lg" href="#" role="button">Delete</a>
+                    <a class="btn btn-warning btn-lg" href="{% url 'organisation:device_edit' device.pk %}" role="button">Edit</a>
                 </div>
             </div>
          </div>
@@ -129,8 +128,8 @@
                                         <h4 class="card-title m-b-0">Comment</h4>
                                     </div>
                                     <div class="alert alert-secondary" role="alert">
-                                      {% if rack.comment %}
-                                            {{ rack.comment }}
+                                      {% if device.comment %}
+                                            {{ device.comment }}
                                         {% else %}
                                             <span class="text-muted">None</span>
                                         {% endif %}
@@ -142,7 +141,7 @@
                                     <div>
                                         <h4 class="card-title m-b-0">Tags</h4>
                                     </div>
-                                    {% include 'extend/tags_panel.html' with tags=rack.tag.all url='organisation:rack_list' %}
+                                    {% include 'extend/tags_panel.html' with tags=device.tag.all url='organisation:device_list' %}
                                 </div>
                             </div>
                         </div>

@@ -8,7 +8,11 @@ REGION_ACTIONS = """
     <a href="{% url 'organisation:region_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
 """
 
-SITE_REGION_LINK = """
+LOCATION_ACTIONS = """
+    <a href="{% url 'organisation:location_edit' slug=record.slug %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
+"""
+
+LOCATION_REGION_LINK = """
 {% if record.region %}
     <a href="{% url 'organisation:location_list' %}?region={{ record.region.slug }}">{{ record.region }}</a>
 {% else %}
@@ -18,6 +22,10 @@ SITE_REGION_LINK = """
 
 RACK_DEVICE_COUNT = """
 <a href="{% url 'organisation:device_list' %}?rack_id={{ record.pk }}">{{ value }}</a>
+"""
+
+RACK_DEVICE_ACTIONS = """
+    <a href="{% url 'organisation:rack_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
 """
 
 DEVICEMODEL_INSTANCES_TEMPLATE = """
@@ -66,11 +74,16 @@ class RegionTable(tables.Table):
 
 class LocationTable(tables.Table):
     name = tables.LinkColumn(order_by=('name',))
-    region = tables.TemplateColumn(template_code=SITE_REGION_LINK)
+    region = tables.TemplateColumn(template_code=LOCATION_REGION_LINK)
+    actions = tables.TemplateColumn(
+        template_code=LOCATION_ACTIONS,
+        attrs={'td': {'class': 'text-right noprint'}},
+        verbose_name=''
+    )
 
     class Meta:
         model = Location
-        fields = ('name', 'region', 'description')
+        fields = ('name', 'region', 'description', 'actions')
         attrs = {'class': 'table table-hover table-headings'}
 
 class RackTable(tables.Table):
@@ -81,9 +94,15 @@ class RackTable(tables.Table):
         template_code=RACK_DEVICE_COUNT,
         verbose_name='Devices'
     )
+    actions = tables.TemplateColumn(
+        template_code=RACK_DEVICE_ACTIONS,
+        attrs={'td': {'class': 'text-right noprint'}},
+        verbose_name=''
+    )
+
     class Meta:
         model = Rack
-        fields = ('name', 'location', 'u_height', 'device_count')
+        fields = ('name', 'location', 'u_height', 'device_count', 'actions')
         attrs = {'class': 'table table-hover table-headings',}
 
 class VendorModelTable(tables.Table):
@@ -146,4 +165,12 @@ class PlatformTable(tables.Table):
     class Meta:
         model = Platform
         fields = ('name', 'slug', 'device_count')
+        attrs = {'class': 'table table-hover table-headings', }
+
+
+class VendorTable(tables.Table):
+
+    class Meta:
+        model = Platform
+        fields = ('name', 'slug',)
         attrs = {'class': 'table table-hover table-headings', }

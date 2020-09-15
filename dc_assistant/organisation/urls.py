@@ -18,6 +18,7 @@ urlpatterns = [
     path('racks/', views.RackListView.as_view(), name='rack_list'),
     path('racks/add', views.RackAdd.as_view(), name='rack_add'),
     path('racks/<int:pk>/', views.RackView.as_view(), name='rack'),
+    path('racks/<int:pk>/edit/', views.RackEdit.as_view(), name='rack_edit'),
 
     path('models/', views.VendorModelListView.as_view(), name='model_list'),
     path('models/add', views.VendorModelAdd.as_view(), name='model_add'),
@@ -28,9 +29,13 @@ urlpatterns = [
     path('platforms/', views.PlatformListView.as_view(), name='platform_list'),
     path('platforms/add', views.PlatformAdd.as_view(), name='platfrom_add'),
 
+    path('vendors/', views.VendorListView.as_view(), name='vendor_list'),
+    path('vendors/add', views.VendorAdd.as_view(), name='vendor_add'),
+
     path('devices/', views.DeviceListView.as_view(), name='device_list'),
     path('devices/add', views.DeviceAdd.as_view(), name='device_add'),
     path('devices/<int:pk>/', views.DeviceView.as_view(), name='device'),
+    path('devices/<int:pk>/edit/', views.DeviceEdit.as_view(), name='device_edit'),
     path('devices/<int:pk>/add-secret/', secret_add, name='device_addsecret'),
 
 ]

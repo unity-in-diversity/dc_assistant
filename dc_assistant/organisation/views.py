@@ -4,11 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView, UpdateView
-from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorModelAddForm, RoleModelAddForm, DeviceAddForm, PlatformAddForm
-from .models import Region, Location, Rack, VendorModel, Device, DeviceRole, Platform
+from .forms import RegionAddForm, LocationAddForm, RackAddForm, VendorAddForm, VendorModelAddForm, RoleModelAddForm, DeviceAddForm, PlatformAddForm
+from .models import Region, Location, Rack, Vendor, VendorModel, Device, DeviceRole, Platform
 from extend.views import ListObjectsView
 from extend import filters
-from .tables import RegionTable, LocationTable, RackTable, VendorModelTable, DeviceRoleTable, DeviceTable, PlatformTable
+from .tables import RegionTable, LocationTable, RackTable, VendorTable, VendorModelTable, DeviceRoleTable, DeviceTable, PlatformTable
 
 
 class RegionListView(PermissionRequiredMixin, ListObjectsView):
@@ -18,7 +18,7 @@ class RegionListView(PermissionRequiredMixin, ListObjectsView):
     template_name = 'organisation/region_tab.html'
 
 
-class RegionAdd(CreateView):
+class RegionAdd(PermissionRequiredMixin, CreateView):
     permission_required = 'organisation.add_region'
     form_class = RegionAddForm
     model = Region
@@ -28,8 +28,8 @@ class RegionAdd(CreateView):
 
 class RegionEdit(PermissionRequiredMixin, UpdateView):
     permission_required = 'organisation.change_region'
-    model = Region
     form_class = RegionAddForm
+    model = Region
     success_url = reverse_lazy('organisation:region_list')
     template_name = 'organisation/region_add.html'
 
@@ -42,7 +42,7 @@ class LocationListView(PermissionRequiredMixin, ListObjectsView):
     template_name = 'organisation/locations_tab.html'
 
 
-class LocationAdd(CreateView):
+class LocationAdd(PermissionRequiredMixin, CreateView):
     permission_required = 'organisation.add_location'
     form_class = LocationAddForm
     model = Location
@@ -74,14 +74,24 @@ class LocationView(PermissionRequiredMixin, View):
         })
 
 
-class RackListView(ListObjectsView):
+class RackListView(PermissionRequiredMixin, ListObjectsView):
+    permission_required = 'organisation.view_rack'
     queryset = Rack.objects.prefetch_related('location').annotate(device_count=Count('devices'))
     filterset = filters.RackFilterSet
     table = RackTable
     template_name = 'organisation/racks_tab.html'
 
 
-class RackAdd(CreateView):
+class RackAdd(PermissionRequiredMixin, CreateView):
+    permission_required = 'organisation.add_rack'
+    form_class = RackAddForm
+    model = Rack
+    success_url = reverse_lazy('organisation:rack_list')
+    template_name = 'organisation/rack_add.html'
+
+
+class RackEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_rack'
     form_class = RackAddForm
     model = Rack
     success_url = reverse_lazy('organisation:rack_list')
@@ -89,6 +99,7 @@ class RackAdd(CreateView):
 
 
 class RackView(View):
+    permission_required = 'organisation.view_rack'
     def get(self, request, pk):
 
         rack = get_object_or_404(Rack.objects.prefetch_related('location__region'), pk=pk)
@@ -129,6 +140,19 @@ class PlatformAdd(CreateView):
     template_name = 'organisation/platform_add.html'
 
 
+class VendorListView(ListObjectsView):
+    queryset = Vendor.objects.all()
+    table = VendorTable
+    template_name = 'organisation/vendor_tab.html'
+
+
+class VendorAdd(CreateView):
+    form_class = VendorAddForm
+    model = Vendor
+    success_url = reverse_lazy('organisation:vendor_list')
+    template_name = 'organisation/vendor_add.html'
+
+
 class RoleDeviceListView(ListObjectsView):
     queryset = DeviceRole.objects.all()
     table = DeviceRoleTable
@@ -143,6 +167,14 @@ class RoleDeviceAdd(CreateView):
 
 
 class DeviceAdd(CreateView):
+    form_class = DeviceAddForm
+    model = Device
+    success_url = reverse_lazy('organisation:device_list')
+    template_name = 'organisation/device_add.html'
+
+
+class DeviceEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_device'
     form_class = DeviceAddForm
     model = Device
     success_url = reverse_lazy('organisation:device_list')
