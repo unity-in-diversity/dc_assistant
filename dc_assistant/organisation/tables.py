@@ -24,12 +24,16 @@ RACK_DEVICE_COUNT = """
 <a href="{% url 'organisation:device_list' %}?rack_id={{ record.pk }}">{{ value }}</a>
 """
 
-RACK_DEVICE_ACTIONS = """
-    <a href="{% url 'organisation:rack_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
-"""
-
 DEVICEMODEL_INSTANCES_TEMPLATE = """
 <a href="{% url 'organisation:device_list' %}?vendor_id={{ record.vendor_id }}&device_model_id={{ record.pk }}">{{ record.instance_count }}</a>
+"""
+
+DEVICEMODEL_ACTIONS = """
+<a href="{% url 'organisation:model_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
+"""
+
+VENDOR_ACTIONS = """
+<a href="{% url 'organisation:vendor_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
 """
 
 PLATFORM_DEVICE_COUNT = """
@@ -37,11 +41,15 @@ PLATFORM_DEVICE_COUNT = """
 """
 
 PLATFORM_ACTIONS = """
-<a href="{% url 'organisation:platform_edit' slug=record.slug %}?return_url={{ request.path }}" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></a>
+<a href="{% url 'organisation:platform_edit' slug=record.slug %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
 """
 
 DEVICEROLE_DEVICE_COUNT = """
 <a href="{% url 'organisation:device_list' %}?role={{ record.slug }}">{{ value }}</a>
+"""
+
+DEVICEROLE_ACTIONS = """
+    <a href="{% url 'organisation:role_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
 """
 
 DEVICE_LINK = """
@@ -59,6 +67,8 @@ COLOR_LABEL = """
 {% load utils %}
 <label class="label" style="color: {{ record.color|fgcolor }}; background-color: #{{ record.color }}">{{ record }}</label>
 """
+
+
 
 class RegionTable(tables.Table):
     actions = tables.TemplateColumn(
@@ -94,15 +104,11 @@ class RackTable(tables.Table):
         template_code=RACK_DEVICE_COUNT,
         verbose_name='Devices'
     )
-    actions = tables.TemplateColumn(
-        template_code=RACK_DEVICE_ACTIONS,
-        attrs={'td': {'class': 'text-right noprint'}},
-        verbose_name=''
-    )
+
 
     class Meta:
         model = Rack
-        fields = ('name', 'location', 'u_height', 'device_count', 'actions')
+        fields = ('name', 'location', 'u_height', 'device_count')
         attrs = {'class': 'table table-hover table-headings',}
 
 class VendorModelTable(tables.Table):
@@ -110,10 +116,15 @@ class VendorModelTable(tables.Table):
     instance_count = tables.TemplateColumn(
         template_code=DEVICEMODEL_INSTANCES_TEMPLATE,
         verbose_name='Instances')
+    actions = tables.TemplateColumn(
+        template_code=DEVICEMODEL_ACTIONS,
+        attrs={'td': {'class': 'text-right noprint'}},
+        verbose_name=''
+    )
 
     class Meta:
         model = VendorModel
-        fields = ('model', 'vendor', 'u_height', 'depth', 'instance_count',)
+        fields = ('model', 'vendor', 'u_height', 'depth', 'instance_count' 'actions')
         attrs = {'class': 'table table-hover table-headings',}
 
 class DeviceRoleTable(tables.Table):
@@ -125,15 +136,15 @@ class DeviceRoleTable(tables.Table):
     )
     color = tables.TemplateColumn(COLOR_LABEL, verbose_name='Label')
     # slug = tables.Column(verbose_name='Slug')
-    # actions = tables.TemplateColumn(
-    #     template_code=DEVICEROLE_ACTIONS,
-    #     attrs={'td': {'class': 'text-right noprint'}},
-    #     verbose_name=''
-    # )
+    actions = tables.TemplateColumn(
+        template_code=DEVICEROLE_ACTIONS,
+        attrs={'td': {'class': 'text-right noprint'}},
+        verbose_name=''
+    )
 
     class Meta:
         model = DeviceRole
-        fields = ('name', 'device_count', 'color', 'description',)
+        fields = ('name', 'device_count', 'color', 'description', 'actions')
         attrs = {'class': 'table table-hover table-headings', }
 
 class DeviceTable(tables.Table):
@@ -161,16 +172,26 @@ class PlatformTable(tables.Table):
         orderable=False,
         verbose_name='Devices'
     )
+    actions = tables.TemplateColumn(
+        template_code=PLATFORM_ACTIONS,
+        attrs={'td': {'class': 'text-right noprint'}},
+        verbose_name=''
+    )
 
     class Meta:
         model = Platform
-        fields = ('name', 'slug', 'device_count')
+        fields = ('name', 'slug', 'device_count', 'actions')
         attrs = {'class': 'table table-hover table-headings', }
 
 
 class VendorTable(tables.Table):
+    actions = tables.TemplateColumn(
+        template_code=VENDOR_ACTIONS,
+        attrs={'td': {'class': 'text-right noprint'}},
+        verbose_name=''
+    )
 
     class Meta:
         model = Platform
-        fields = ('name', 'slug',)
+        fields = ('name', 'slug', 'actions')
         attrs = {'class': 'table table-hover table-headings', }

@@ -126,6 +126,12 @@ class VendorModelAdd(CreateView):
     success_url = reverse_lazy('organisation:model_list')
     template_name = 'organisation/model_add.html'
 
+class VendorModelEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_platform'
+    form_class = VendorModelAddForm
+    model = VendorModel
+    success_url = reverse_lazy('organisation:model_list')
+    template_name = 'organisation/model_add.html'
 
 class PlatformListView(ListObjectsView):
     queryset = Platform.objects.all()
@@ -140,13 +146,31 @@ class PlatformAdd(CreateView):
     template_name = 'organisation/platform_add.html'
 
 
+class PlatformEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_platform'
+    form_class = PlatformAddForm
+    model = Platform
+    success_url = reverse_lazy('organisation:platform_list')
+    template_name = 'organisation/platform_add.html'
+
+
 class VendorListView(ListObjectsView):
+    permission_required = 'organisation.view_vendor'
     queryset = Vendor.objects.all()
     table = VendorTable
     template_name = 'organisation/vendor_tab.html'
 
 
 class VendorAdd(CreateView):
+    permission_required = 'organisation.add_vendor'
+    form_class = VendorAddForm
+    model = Vendor
+    success_url = reverse_lazy('organisation:vendor_list')
+    template_name = 'organisation/vendor_add.html'
+
+
+class VendorEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_vendor'
     form_class = VendorAddForm
     model = Vendor
     success_url = reverse_lazy('organisation:vendor_list')
@@ -154,12 +178,22 @@ class VendorAdd(CreateView):
 
 
 class RoleDeviceListView(ListObjectsView):
+    permission_required = 'organisation.view_role'
     queryset = DeviceRole.objects.all()
     table = DeviceRoleTable
     template_name = 'organisation/roles_tab.html'
 
 
 class RoleDeviceAdd(CreateView):
+    permission_required = 'organisation.add_role'
+    form_class = RoleModelAddForm
+    model = DeviceRole
+    success_url = reverse_lazy('organisation:role_list')
+    template_name = 'organisation/role_add.html'
+
+
+class RoleDeviceEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'organisation.change_role'
     form_class = RoleModelAddForm
     model = DeviceRole
     success_url = reverse_lazy('organisation:role_list')

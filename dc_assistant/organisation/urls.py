@@ -22,15 +22,19 @@ urlpatterns = [
 
     path('models/', views.VendorModelListView.as_view(), name='model_list'),
     path('models/add', views.VendorModelAdd.as_view(), name='model_add'),
+    path('models/<int:pk>/edit/', views.VendorModelEdit.as_view(), name='model_edit'),
 
     path('roles/', views.RoleDeviceListView.as_view(), name='role_list'),
     path('roles/add', views.RoleDeviceAdd.as_view(), name='role_add'),
+    path('roles/<int:pk>/edit/', views.RoleDeviceEdit.as_view(), name='role_edit'),
 
     path('platforms/', views.PlatformListView.as_view(), name='platform_list'),
     path('platforms/add', views.PlatformAdd.as_view(), name='platfrom_add'),
+    path('platforms/<slug:slug>/edit/', views.PlatformEdit.as_view(), name='platform_edit'),
 
     path('vendors/', views.VendorListView.as_view(), name='vendor_list'),
     path('vendors/add', views.VendorAdd.as_view(), name='vendor_add'),
+    path('vendors/<int:pk>/edit/', views.VendorEdit.as_view(), name='vendor_edit'),
 
     path('devices/', views.DeviceListView.as_view(), name='device_list'),
     path('devices/add', views.DeviceAdd.as_view(), name='device_add'),
