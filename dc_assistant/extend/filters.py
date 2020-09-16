@@ -104,11 +104,19 @@ class DeviceModelFilterSet(django_filters.FilterSet):
         ]
 
 class DeviceFilterSet(django_filters.FilterSet):
-
+    id__in = NumericInFilter(
+        field_name='id',
+        lookup_expr='in'
+    )
     rack_id = django_filters.ModelMultipleChoiceFilter(
         field_name='rack',
         queryset=Rack.objects.all(),
         label='Rack (ID)',
+    )
+    role_id = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_role_id',
+        queryset=DeviceRole.objects.all(),
+        label='Role (ID)',
     )
     role = django_filters.ModelMultipleChoiceFilter(
         field_name='device_role__slug',
@@ -118,19 +126,60 @@ class DeviceFilterSet(django_filters.FilterSet):
     )
     device_model_id = django_filters.ModelMultipleChoiceFilter(
         queryset=VendorModel.objects.all(),
-        label='Device type (ID)',
+        label='Device model (ID)',
+    )
+    model = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_model__slug',
+        queryset=VendorModel.objects.all(),
+        to_field_name='slug',
+        label='Model (slug)',
     )
     vendor_id = django_filters.ModelMultipleChoiceFilter(
         field_name='device_model__vendor',
         queryset=Vendor.objects.all(),
-        label='Manufacturer (ID)',
+        label='Vendor (ID)',
     )
+    vendor = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_model__vendor__slug',
+        queryset=Vendor.objects.all(),
+        to_field_name='slug',
+        label='Vendor (slug)',)
+
     platform = django_filters.ModelMultipleChoiceFilter(
         field_name='platform__slug',
         queryset=Platform.objects.all(),
         to_field_name='slug',
         label='Platform (slug)',
     )
+    platform_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Platform.objects.all(),
+        label='Platform (ID)',
+    )
+    region_id = TreeNodeMultipleChoiceFilter(
+        queryset=Region.objects.all(),
+        field_name='location__region__in',
+        label='Region (ID)',
+    )
+    region = TreeNodeMultipleChoiceFilter(
+        queryset=Region.objects.all(),
+        field_name='location__region__in',
+        to_field_name='slug',
+        label='Region (slug)',
+    )
+    location_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Location.objects.all(),
+        label='Site (ID)',
+    )
+    location = django_filters.ModelMultipleChoiceFilter(
+        field_name='location__slug',
+        queryset=Location.objects.all(),
+        to_field_name='slug',
+        label='Site name (slug)',
+    )
+
+    class Meta:
+        model = Device
+        fields = ['id', 'name', 'face_position', 'position']
 
 
 class SecretFilterSet(django_filters.FilterSet):

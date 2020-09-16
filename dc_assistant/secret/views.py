@@ -82,6 +82,7 @@ def secret_add(request, pk):
 
     if request.method == 'POST':
         form = SecretAddForm(request.POST, instance=secret)
+        print(request)
         if form.is_valid():
             # Valid session key in order to create a Secret
             if session_key is None:

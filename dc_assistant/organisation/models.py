@@ -363,7 +363,16 @@ class Device(LoggingModel):
         ordering = ('name', 'pk')
 
     def __str__(self):
+        return self.display_name or super().__str__()
         return self.name
+
+    @property
+    def display_name(self):
+        if self.name:
+            return self.name
+        elif hasattr(self, 'device_model'):
+            return "{}".format(self.device_model)
+        return ""
 
     def get_absolute_url(self):
         return reverse('organisation:device', args=[self.pk])

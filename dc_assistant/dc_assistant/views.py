@@ -26,4 +26,5 @@ class APIRootView(APIView):
 
         return Response(OrderedDict((
             ('secrets', reverse('secrets-api:api-root', request=request, format=format)),
+            ('organisation', reverse('organisation-api:api-root', request=request, format=format)),
         )))

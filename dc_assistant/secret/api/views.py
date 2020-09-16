@@ -1,18 +1,25 @@
 import base64
 from rest_framework import routers
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 from Crypto.PublicKey import RSA
 from rest_framework.response import Response
-
 from django.http import HttpResponseBadRequest
-from secret.models import UserKey, SessionKey
+from secret.models import UserKey, SessionKey, Secret
+from extend.filters import SecretFilterSet
+from .serializers import SecretSerializer
 
 ERR_USERKEY_MISSING = "No UserKey found for the current user."
 ERR_USERKEY_INACTIVE = "UserKey has not been activated for decryption."
 ERR_PRIVKEY_MISSING = "Private key was not provided."
 ERR_PRIVKEY_INVALID = "Invalid private key."
 
+class InvalidKey(Exception):
+    """
+    Raised when a provided key is invalid.
+    """
+    pass
 
 class SecretsRootView(routers.APIRootView):
     """
@@ -120,3 +127,82 @@ class GetSessionKeyViewSet(ViewSet):
             response.set_cookie('session_key', value=encoded_key)
 
         return response
+
+
+class SecretViewSet(ModelViewSet):
+    queryset = Secret.objects.prefetch_related(
+        'role', 'role__users', 'role__groups',
+    )
+    serializer_class = SecretSerializer
+    filterset_class = SecretFilterSet
+
+    master_key = None
+
+    def get_serializer_context(self):
+
+        # Make the master key available to the serializer for encrypting plaintext values
+        context = super().get_serializer_context()
+        context['master_key'] = self.master_key
+
+        return context
+
+    def initial(self, request, *args, **kwargs):
+
+        super().initial(request, *args, **kwargs)
+
+        if request.user.is_authenticated:
+
+            # read session key from HTTP cookie or header. The session key must exist in order to encrypt/decrypt.
+            if 'session_key' in request.COOKIES:
+                session_key = base64.b64decode(request.COOKIES['session_key'])
+            elif 'HTTP_X_SESSION_KEY' in request.META:
+                session_key = base64.b64decode(request.META['HTTP_X_SESSION_KEY'])
+            else:
+                session_key = None
+
+            # can't encrypt secret plaintext without a session key.
+            if self.action in ['create', 'update'] and session_key is None:
+                raise ValidationError("A session key must exist when creatt or update secrets.")
+
+            # get master key for encryption/decryption if a session key exist.
+            if session_key is not None:
+                try:
+                    sk = SessionKey.objects.get(userkey__user=request.user)
+                    self.master_key = sk.get_master_key(session_key)
+                except (SessionKey.DoesNotExist, InvalidKey):
+                    raise ValidationError("Invalid session key.")
+
+    def retrieve(self, request, *args, **kwargs):
+
+        secret = self.get_object()
+
+        # decrypt the secret if the user have permission and the master key exist
+        if secret.decryptable_by(request.user) and self.master_key is not None:
+            secret.decrypt(self.master_key)
+
+        serializer = self.get_serializer(secret)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+
+            # decrypt all secrets if the master key exist
+            if self.master_key is not None:
+                secrets = []
+                for secret in page:
+                    # Enforce role permissions
+                    if secret.decryptable_by(request.user):
+                        secret.decrypt(self.master_key)
+                    secrets.append(secret)
+                serializer = self.get_serializer(secrets, many=True)
+            else:
+                serializer = self.get_serializer(page, many=True)
+
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
