@@ -1,7 +1,6 @@
 import base64
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.views.generic import View
+from django.views.generic import View, CreateView, UpdateView
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -10,15 +9,16 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.http import is_safe_url
 from django.contrib import messages
 from django.urls import reverse_lazy
-
+from django.db.models import Count
 from organisation.models import Device
 from extend.views import ListObjectsView
-from .forms import UserAuthenticationForm, UserChangePasswordForm
-from .models import SessionKey, Secret, UserKey
+from .forms import UserAuthenticationForm, UserChangePasswordForm, SecretRoleAddForm
+from .models import SessionKey, Secret, UserKey, SecretRole
 from .forms import SecretAddForm, UserKeyForm
 from .decorators import userkey_required
 from extend import filters
-from .tables import SecretTable
+from .tables import SecretTable, SecretRoleTable
+
 
 class UserLoginView(LoginView):
     template_name = 'secret/login.html'
@@ -69,6 +69,7 @@ def get_session_key(request):
         return base64.b64decode(session_key)
     return session_key
 
+
 @userkey_required()
 def secret_add(request, pk):
 
@@ -115,6 +116,7 @@ def secret_add(request, pk):
         'return_url': device.get_absolute_url(),
     })
 
+
 class UserKeyView(LoginRequiredMixin, View):
     template_name = 'secret/userkey.html'
 
@@ -127,6 +129,7 @@ class UserKeyView(LoginRequiredMixin, View):
         return render(request, self.template_name, {
             'userkey': userkey,
         })
+
 
 class UserKeyAddEditView(LoginRequiredMixin, View):
     template_name = 'secret/userkey_add_edit.html'
@@ -161,12 +164,14 @@ class UserKeyAddEditView(LoginRequiredMixin, View):
             'form': form,
         })
 
+
 class SecretListView(PermissionRequiredMixin, ListObjectsView):
     permission_required = 'secret.view_secret'
     queryset = Secret.objects.prefetch_related('role', 'device')
     filterset = filters.SecretFilterSet
     table = SecretTable
     template_name = 'secret/secret_tab.html'
+
 
 class SecretView(PermissionRequiredMixin, View):
     permission_required = 'secret.view_secret'
@@ -178,3 +183,26 @@ class SecretView(PermissionRequiredMixin, View):
         return render(request, 'secret/secret.html', {
             'secret': secret,
         })
+
+
+class SecretRoleAdd(CreateView):
+    permission_required = 'secret.add_secretrole'
+    form_class = SecretRoleAddForm
+    model = SecretRole
+    success_url = reverse_lazy('secret:secretrole_list')
+    template_name = 'secret/secretrole_add.html'
+
+
+class SecretRoleListView(ListObjectsView):
+    permission_required = 'secret.view_secretrole'
+    queryset = SecretRole.objects.annotate(secret_count=Count('secrets'))
+    table = SecretRoleTable
+    template_name = 'secret/secretroles_tab.html'
+
+
+class SecretRoleEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = 'secret.change_secretrole'
+    form_class = SecretRoleAddForm
+    model = SecretRole
+    success_url = reverse_lazy('secret:secretrole_list')
+    template_name = 'secret/secretrole_add.html'

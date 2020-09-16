@@ -1,12 +1,12 @@
 from django import forms
-from django.forms import Textarea
+from django.forms import Textarea, SelectMultiple
 from taggit.forms import TagField
 from django.forms import TextInput
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from .models import Secret, UserKey, SecretRole
-
+from extend.forms import StaticSelectWidget, SlugField, Select2Multiple
 
 def validate_rsa_key(key, is_secret=True):
     """
@@ -151,3 +151,17 @@ class SecretAddForm(forms.ModelForm):
             raise forms.ValidationError({
                 'plaintext2': "Secrets(passwords) do not match. Please check input, try again."
             })
+
+class SecretRoleAddForm(forms.ModelForm):
+    slug = SlugField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = SecretRole
+        fields = ['name', 'slug', 'description', 'users', 'groups', ]
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'description': Textarea(attrs={'class': 'form-control', 'rows': 5, }),
+            'users': Select2Multiple(),
+            'groups': Select2Multiple(),
+        }

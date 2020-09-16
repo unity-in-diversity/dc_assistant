@@ -71,3 +71,36 @@ class ColorField(models.CharField):
     def formfield(self, **kwargs):
         kwargs['widget'] = ColorSelect
         return super().formfield(**kwargs)
+
+
+class StaticSelectWidget(forms.Select):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.attrs['class'] = 'select2 form-control custom-select'
+
+class Select2Multiple(forms.SelectMultiple):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.attrs['class'] = 'select2 form-control'
+        self.attrs['multiple'] = 1
+
+class SlugWidget(forms.TextInput):
+    """
+    Widget for TextInput. It autocreates value of filed slug by JS
+    """
+    template_name = 'extend/sluginput.html'
+
+
+class SlugField(forms.SlugField):
+    """
+    Extend of SlugField. Let to autocreate value using another field value ('name'). Only for ENG.
+
+    """
+    def __init__(self, slug_source='name', *args, **kwargs):
+        label = kwargs.pop('label', "Slug")
+        widget = kwargs.pop('widget', SlugWidget)
+        super().__init__(label=label, widget=widget, *args, **kwargs)
+        self.widget.attrs['slug-source'] = slug_source

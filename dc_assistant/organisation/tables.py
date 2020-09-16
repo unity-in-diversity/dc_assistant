@@ -49,7 +49,7 @@ DEVICEROLE_DEVICE_COUNT = """
 """
 
 DEVICEROLE_ACTIONS = """
-    <a href="{% url 'organisation:role_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
+<a href="{% url 'organisation:role_edit' pk=record.pk %}" class="btn btn-warning btn-sm"><i class="m-r-10 mdi mdi-grease-pencil" aria-hidden="true"></i></a>
 """
 
 DEVICE_LINK = """
