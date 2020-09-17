@@ -6,31 +6,6 @@ from django.forms import Textarea, TextInput, NumberInput
 from .models import Region, Location, Rack, VendorModel, Vendor, DeviceRole, Device, Platform
 from extend.forms import StaticSelectWidget, SlugField
 
-# class StaticSelectWidget(forms.Select):
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.attrs['class'] = 'select2 form-control custom-select'
-#
-#
-# class SlugWidget(forms.TextInput):
-#     """
-#     Widget for TextInput. It autocreates value of filed slug by JS
-#     """
-#     template_name = 'organisation/sluginput.html'
-#
-#
-# class SlugField(forms.SlugField):
-#     """
-#     Extend of SlugField. Let to autocreate value using another field value ('name'). Only for ENG.
-#
-#     """
-#     def __init__(self, slug_source='name', *args, **kwargs):
-#         label = kwargs.pop('label', "Slug")
-#         widget = kwargs.pop('widget', SlugWidget)
-#         super().__init__(label=label, widget=widget, *args, **kwargs)
-#         self.widget.attrs['slug-source'] = slug_source
-
 
 class RegionAddForm(forms.ModelForm):
     parent = TreeNodeChoiceField(
