@@ -5,7 +5,7 @@
 #########################
 
 BASE_PATH = ''
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 DATABASE = {
     'ENGINE': 'django.db.backends.postgresql',  # Database engine
