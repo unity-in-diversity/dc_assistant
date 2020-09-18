@@ -1,101 +1,170 @@
 {% extends "base.html" %}
 {% load static %}
-{% load render_table from django_tables2 %}
-{% block title %}DC Assistant{% endblock %}
+{% load django_tables2 %}
+{% load utils %}
+
 {% block content %}
                 <div class="row">
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
+                    <!-- ============================================================== -->
+                    <!-- Left column main page -->
+                    <!-- ============================================================== -->
+                    <div class="col-md-4 col-lg-4 col-xlg-4">
+
                         <div class="card card-hover">
-                            <div class="box bg-cyan text-center">
+                            <div class="box bg-success text-left ">
                                 <h1 class="font-light text-white"><i class="mdi mdi-view-dashboard"></i></h1>
-                                <h6 class="text-white">Тут на главной</h6>
+                                <h2 class="text-white">Organisation</h2>
+                                <table class="table text-white">
+                                    <tbody>
+                                    <tr>
+                                        <td><h4>Regions</h4></td>
+                                        <td>
+                                            {% if perms.organisation.view_region %}
+                                                <h4 class="list-group-item-heading"><a href="{% url 'organisation:region_list' %}" style="color: white">{{ stats.region_count }}</a></h4>
+                                            {% else %}
+                                                <span class="badge pull-right"><i class="fas fa-lock"></i></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><h4>Locations</h4></td>
+                                        <td>
+                                            {% if perms.organisation.view_region %}
+                                            <h4 class="list-group-item-heading"><a href="{% url 'organisation:location_list' %}" style="color: white">{{ stats.location_count }}</a></h4>
+                                            {% else %}
+                                                <span class="badge pull-right"><i class="fas fa-lock"></i></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-4 col-xlg-3">
+
                         <div class="card card-hover">
-                            <div class="box bg-success text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-chart-areaspline"></i></h1>
-                                <h6 class="text-white">будут</h6>
+                            <div class="box bg-cyan text-left ">
+                                <h1 class="font-light text-white"><i class="mdi mdi-server"></i></h1>
+                                <h2 class="text-white">Phisical Devices</h2>
+                                <table class="table text-white">
+                                    <tbody>
+                                    <tr>
+                                        <td><h4>Racks</h4></td>
+                                        <td>
+                                            {% if perms.organisation.view_rack %}
+                                                <h4 class="list-group-item-heading"><a href="{% url 'organisation:rack_list' %}" style="color: white">{{ stats.rack_count }}</a></h4>
+                                            {% else %}
+                                                <span class="badge pull-right"><i class="fas fa-lock"></i></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><h4>Device Models</h4></td>
+                                        <td>
+                                            {% if perms.organisation.view_vendormodel %}
+                                                <h4 class="list-group-item-heading"><a href="{% url 'organisation:model_list' %}" style="color: white">{{ stats.devicemodel_count }}</a></h4>
+                                            {% else %}
+                                                <span class="badge pull-right"><i class="fas fa-lock"></i></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><h4>Devices</h4></td>
+                                        <td>
+                                            {% if perms.organisation.view_device %}
+                                                <h4 class="list-group-item-heading"><a href="{% url 'organisation:device_list' %}" style="color: white">{{ stats.device_count }}</a></h4>
+                                            {% else %}
+                                                <span class="badge pull-right"><i class="fas fa-lock"></i></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+
                     </div>
-                     <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
+                    <!-- ============================================================== -->
+                    <!-- Center column main page -->
+                    <!-- ============================================================== -->
+                    <div class="col-md-4 col-lg-4 col-xlg-4">
+
                         <div class="card card-hover">
-                            <div class="box bg-warning text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-collage"></i></h1>
-                                <h6 class="text-white">разные</h6>
+                            <div class="box bg-info text-left ">
+                                <h1 class="font-light text-white"><i class="mdi mdi-cloud"></i></h1>
+                                <h2 class="text-white">Virtualisation</h2>
+                                <table class="table text-white">
+                                    <tbody>
+                                    <tr>
+                                        <td><h4>VMs</h4></td>
+                                        <td>
+                                            <h4 class="list-group-item-heading"><a href="#" style="color: white">in developing</a></h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><h4>Virtual Clusters</h4></td>
+                                        <td>
+                                            <h4 class="list-group-item-heading"><a href="#" style="color: white">in developing</a></h4>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
+
                         <div class="card card-hover">
-                            <div class="box bg-danger text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-border-outside"></i></h1>
-                                <h6 class="text-white">дашборды</h6>
+                            <div class="box bg-warning text-left ">
+                                <h1 class="font-light text-white"><i class="mdi mdi-network"></i></h1>
+                                <h2 class="text-white">Networking</h2>
+                                <table class="table text-white">
+                                    <tbody>
+                                    <tr>
+                                        <td><h4>IP Addresses</h4></td>
+                                        <td>
+                                            <h4 class="list-group-item-heading"><a href="#" style="color: white">in developing</a></h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><h4>VLAN/Subnets</h4></td>
+                                        <td>
+                                            <h4 class="list-group-item-heading"><a href="#" style="color: white">in developing</a></h4>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+
                     </div>
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
+                    <!-- ============================================================== -->
+                    <!-- Right column main page -->
+                    <!-- ============================================================== -->
+                    <div class="col-md-4 col-lg-4 col-xlg-4">
+
                         <div class="card card-hover">
-                            <div class="box bg-info text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-arrow-all"></i></h1>
-                                <h6 class="text-white">а так же</h6>
+                            <div class="box bg-danger text-left ">
+                                <h1 class="font-light text-white"><i class="mdi mdi-lock"></i></h1>
+                                <h2 class="text-white">Secrets</h2>
+                                <table class="table text-white">
+                                    <tbody>
+
+                                    <tr>
+                                        <td><h4>Secrets</h4></td>
+                                        <td>
+                                            {% if perms.organisation.view_secret %}
+                                            <h4 class="list-group-item-heading"><a href="{% url 'secret:secret_list' %}" style="color: white">{{ stats.secret_count }}</a></h4>
+                                            {% else %}
+                                                <span class="badge pull-right"><i class="fas fa-lock"></i></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+
                     </div>
-                    <!-- Column -->
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-4 col-xlg-3">
-                        <div class="card card-hover">
-                            <div class="box bg-danger text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-receipt"></i></h1>
-                                <h6 class="text-white">сводные данные</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
-                        <div class="card card-hover">
-                            <div class="box bg-info text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-relative-scale"></i></h1>
-                                <h6 class="text-white">о инфраструктуре</h6>
-                            </div>
-                        </div>
-                    </div>
-                     <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
-                        <div class="card card-hover">
-                            <div class="box bg-cyan text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-pencil"></i></h1>
-                                <h6 class="text-white"> и элементы</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
-                        <div class="card card-hover">
-                            <div class="box bg-success text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-calendar-check"></i></h1>
-                                <h6 class="text-white">управления</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                    <div class="col-md-6 col-lg-2 col-xlg-3">
-                        <div class="card card-hover">
-                            <div class="box bg-warning text-center">
-                                <h1 class="font-light text-white"><i class="mdi mdi-alert"></i></h1>
-                                <h6 class="text-white">и т.д. и т.п.</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
+
                 </div>
+
 
 {% endblock %}
