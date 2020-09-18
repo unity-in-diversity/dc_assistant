@@ -150,7 +150,7 @@
                                     <tr>
                                         <td><h4>Secrets</h4></td>
                                         <td>
-                                            {% if perms.organisation.view_secret %}
+                                            {% if perms.secret.view_secret %}
                                             <h4 class="list-group-item-heading"><a href="{% url 'secret:secret_list' %}" style="color: white">{{ stats.secret_count }}</a></h4>
                                             {% else %}
                                                 <span class="badge pull-right"><i class="fas fa-lock"></i></span>
